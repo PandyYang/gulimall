@@ -1,4 +1,4 @@
-package com.pandy.member;
+package com.pandy.gulimall.member;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

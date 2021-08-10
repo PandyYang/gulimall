@@ -1,4 +1,4 @@
-package com.pandy.order;
+package com.pandy.gulimall.order;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

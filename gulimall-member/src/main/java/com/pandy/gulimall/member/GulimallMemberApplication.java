@@ -1,13 +1,13 @@
-package com.pandy.coupon;
+package com.pandy.gulimall.member;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class GulimallCouponApplication {
+public class GulimallMemberApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(GulimallCouponApplication.class, args);
+        SpringApplication.run(GulimallMemberApplication.class, args);
     }
 
 }

@@ -1,10 +1,10 @@
-package com.pandy.ware;
+package com.pandy.gulimall.order;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class GulimallWareApplicationTests {
+class GulimallOrderApplicationTests {
 
     @Test
     void contextLoads() {

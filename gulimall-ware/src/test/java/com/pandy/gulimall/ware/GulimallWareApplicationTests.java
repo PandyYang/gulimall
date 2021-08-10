@@ -1,10 +1,10 @@
-package com.pandy.coupon;
+package com.pandy.gulimall.ware;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class GulimallCouponApplicationTests {
+class GulimallWareApplicationTests {
 
     @Test
     void contextLoads() {
