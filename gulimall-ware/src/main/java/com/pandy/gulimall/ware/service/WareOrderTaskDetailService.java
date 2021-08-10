@@ -11,7 +11,7 @@ import java.util.Map;
  *
  * @author Pandy
  * @email yangpandy@gmail.com
- * @date 2021-08-11 00:55:25
+ * @date 2021-08-11 00:45:44
  */
 public interface WareOrderTaskDetailService extends IService<WareOrderTaskDetailEntity> {
 

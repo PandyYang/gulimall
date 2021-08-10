@@ -10,32 +10,32 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.pandy.gulimall.ware.entity.WareInfoEntity;
-import com.pandy.gulimall.ware.service.WareInfoService;
+import com.pandy.gulimall.ware.entity.PurchaseEntity;
+import com.pandy.gulimall.ware.service.PurchaseService;
 import com.pandy.common.utils.PageUtils;
 import com.pandy.common.utils.R;
 
 
 
 /**
- * 仓库信息
+ * 采购信息
  *
  * @author Pandy
  * @email yangpandy@gmail.com
  * @date 2021-08-11 00:45:45
  */
 @RestController
-@RequestMapping("ware/wareinfo")
-public class WareInfoController {
+@RequestMapping("ware/purchase")
+public class PurchaseController {
     @Autowired
-    private WareInfoService wareInfoService;
+    private PurchaseService purchaseService;
 
     /**
      * 列表
      */
     @RequestMapping("/list")
     public R list(@RequestParam Map<String, Object> params){
-        PageUtils page = wareInfoService.queryPage(params);
+        PageUtils page = purchaseService.queryPage(params);
 
         return R.ok().put("page", page);
     }
@@ -46,17 +46,17 @@ public class WareInfoController {
      */
     @RequestMapping("/info/{id}")
     public R info(@PathVariable("id") Long id){
-		WareInfoEntity wareInfo = wareInfoService.getById(id);
+		PurchaseEntity purchase = purchaseService.getById(id);
 
-        return R.ok().put("wareInfo", wareInfo);
+        return R.ok().put("purchase", purchase);
     }
 
     /**
      * 保存
      */
     @RequestMapping("/save")
-    public R save(@RequestBody WareInfoEntity wareInfo){
-		wareInfoService.save(wareInfo);
+    public R save(@RequestBody PurchaseEntity purchase){
+		purchaseService.save(purchase);
 
         return R.ok();
     }
@@ -65,8 +65,8 @@ public class WareInfoController {
      * 修改
      */
     @RequestMapping("/update")
-    public R update(@RequestBody WareInfoEntity wareInfo){
-		wareInfoService.updateById(wareInfo);
+    public R update(@RequestBody PurchaseEntity purchase){
+		purchaseService.updateById(purchase);
 
         return R.ok();
     }
@@ -76,7 +76,7 @@ public class WareInfoController {
      */
     @RequestMapping("/delete")
     public R delete(@RequestBody Long[] ids){
-		wareInfoService.removeByIds(Arrays.asList(ids));
+		purchaseService.removeByIds(Arrays.asList(ids));
 
         return R.ok();
     }
