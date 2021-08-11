@@ -4,11 +4,7 @@ import java.util.Arrays;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.pandy.gulimall.coupon.entity.CouponEntity;
 import com.pandy.gulimall.coupon.service.CouponService;
@@ -29,6 +25,14 @@ import com.pandy.common.utils.R;
 public class CouponController {
     @Autowired
     private CouponService couponService;
+
+
+    @GetMapping(value = "/member/list")
+    public R membercoupons() {
+        CouponEntity couponEntity = new CouponEntity();
+        couponEntity.setCouponName("123");
+        return R.ok().put("coupons", Arrays.asList(couponEntity));
+    }
 
     /**
      * 列表
