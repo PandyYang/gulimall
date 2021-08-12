@@ -22,10 +22,4 @@ public class GulimallMemberApplication {
     public static void main(String[] args) {
         SpringApplication.run(GulimallMemberApplication.class, args);
     }
-
-    @Bean
-    @ConditionalOnMissingBean
-    public HttpMessageConverters messageConverters(ObjectProvider<HttpMessageConverter<?>> converters) {
-        return new HttpMessageConverters(converters.orderedStream().collect(Collectors.toList()));
-    }
 }
