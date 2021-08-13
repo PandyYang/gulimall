@@ -7,7 +7,7 @@ spring:
           predicates:
             - Query=url,baidu
         - id: qq_route
-          uri: https://ww.qq.com
+          uri: https://www.qq.com
           predicates:
             - Query=url,qq
 
