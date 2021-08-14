@@ -35,10 +35,10 @@ public class CategoryController {
      * 查出所有分类和子分类
      * 以树形结构组装
      */
-    @RequestMapping("/list")
-    public R list(){
+    @RequestMapping("/list/tree")
+    public List<CategoryEntity> list(){
         List<CategoryEntity> entityList = categoryService.listWithTree();
-        return R.ok().put("page", entityList);
+        return entityList;
     }
 
 
