@@ -28,6 +28,7 @@ import com.pandy.common.utils.R;
 @RestController
 @RequestMapping("product/category")
 public class CategoryController {
+
     @Autowired
     private CategoryService categoryService;
 
@@ -40,7 +41,6 @@ public class CategoryController {
         List<CategoryEntity> entityList = categoryService.listWithTree();
         return entityList;
     }
-
 
     /**
      * 信息
