@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -62,7 +63,7 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
     private List<CategoryEntity> getChildrens(CategoryEntity root, List<CategoryEntity> all) {
 
         List<CategoryEntity> children = all.stream()
-                .filter(item -> item.getParentCid() == root.getCatId())
+                .filter(item -> Objects.equals(item.getParentCid(), root.getCatId()))
                 .map(menu -> { menu.setChildren(getChildrens(menu, all));
             return menu;
         }).sorted((res1, res2) -> {
