@@ -15,10 +15,10 @@ import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 
 @SpringBootApplication
 @EnableDiscoveryClient
-public class RenrenApplication {
+public class RenrenFastApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(RenrenApplication.class, args);
+		SpringApplication.run(RenrenFastApplication.class, args);
 	}
 
 }

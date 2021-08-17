@@ -1,5 +1,8 @@
 package com.pandy.gulimall.product;
 
+import com.aliyun.oss.OSS;
+import com.aliyun.oss.OSSClientBuilder;
+import com.aliyun.oss.model.PutObjectRequest;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.pandy.gulimall.product.entity.BrandEntity;
 import com.pandy.gulimall.product.service.BrandService;
@@ -7,6 +10,7 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.io.ByteArrayInputStream;
 import java.util.List;
 
 @SpringBootTest
