@@ -14,7 +14,7 @@ import java.io.ByteArrayInputStream;
 import java.util.List;
 
 @SpringBootTest
-class GulimallProductApplicationTests {
+public class GulimallProductApplicationTests {
 
     @Autowired
     BrandService brandService;
