@@ -3,7 +3,16 @@ spring:
     nacos:
       discovery:
         server-addr: 47.95.216.30:8848
+    alicloud:
+      access-key: LTAI5tSbzmwfVQsoJUjH9NbK
+      secret-key: GYNIZhsUolshOdHUfflSdlv8XWHjWB
+      oss:
+        endpoint: oss-cn-beijing.aliyuncs.com
+        bucket: pandy-gulimall
+
   application:
     name: gulimall-third-part
+
 server:
   port: 30000
+
