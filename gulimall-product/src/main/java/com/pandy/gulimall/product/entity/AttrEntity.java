@@ -1,5 +1,6 @@
 package com.pandy.gulimall.product.entity;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 
@@ -9,7 +10,7 @@ import lombok.Data;
 
 /**
  * 商品属性
- * 
+ *
  * @author Pandy
  * @email yangpandy@gmail.com
  * @date 2021-08-10 23:46:58

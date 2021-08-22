@@ -46,7 +46,6 @@ public class BrandEntity implements Serializable {
 	 * 显示状态[0-不显示；1-显示]
 	 */
 	@NotEmpty
-	@Pattern(regexp = "/^[0|1]$/", message = "显示状态必须为0或1")
 	private Integer showStatus;
 	/**
 	 * 检索首字母
