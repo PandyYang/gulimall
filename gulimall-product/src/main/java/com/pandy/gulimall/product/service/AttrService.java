@@ -6,6 +6,7 @@ import com.pandy.gulimall.product.entity.AttrEntity;
 import com.pandy.gulimall.product.vo.AttrVo;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -22,5 +23,9 @@ public interface AttrService extends IService<AttrEntity> {
     void saveAttr(AttrVo attrVo) throws InvocationTargetException, IllegalAccessException;
 
     PageUtils queryBaseAttr(Map<String, Object> params, Long categoryId);
+
+    PageUtils queryBaseAttrPage(Map<String, Object> params, Long catelogId, String attrType);
+
+    List<AttrEntity> getRelationAttr(Long attrgroupId);
 }
 

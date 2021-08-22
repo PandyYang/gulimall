@@ -2,8 +2,11 @@ package com.pandy.gulimall.product.controller;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
+import com.pandy.gulimall.product.service.AttrAttrgroupRelationService;
+import com.pandy.gulimall.product.vo.AttrGroupRelationVo;
 import com.pandy.gulimall.product.vo.AttrVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -13,6 +16,7 @@ import com.pandy.gulimall.product.service.AttrService;
 import com.pandy.common.utils.PageUtils;
 import com.pandy.common.utils.R;
 
+import javax.annotation.Resource;
 
 
 /**
@@ -28,9 +32,25 @@ public class AttrController {
     @Autowired
     private AttrService attrService;
 
+    @Resource
+    private AttrAttrgroupRelationService relationService;
+
     @GetMapping("/base/list/{categoryId}")
     public R baseAttrList(@RequestParam Map<String, Object> params, @PathVariable Long categoryId) {
         PageUtils page = attrService.queryBaseAttr(params, categoryId);
+        return R.ok().put("page", page);
+    }
+
+    @PostMapping("/attr/relation")
+    public R addRelation(@RequestBody List<AttrGroupRelationVo> vos){
+        relationService.saveBatch(vos);
+        return R.ok();
+    }
+
+    @GetMapping("/{attrType}/list/{catelogId}")
+    public R baseAttrList(@RequestParam Map<String, Object> params ,@PathVariable("catelogId") Long catelogId, @PathVariable("attrType") String attrType){
+
+        PageUtils page = attrService.queryBaseAttrPage(params, catelogId, attrType);
         return R.ok().put("page", page);
     }
 
