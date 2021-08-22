@@ -37,9 +37,9 @@ public class CategoryController {
      * 以树形结构组装
      */
     @RequestMapping("/list/tree")
-    public List<CategoryEntity> list(){
+    public R list(){
         List<CategoryEntity> entityList = categoryService.listWithTree();
-        return entityList;
+        return R.ok().put("data", entityList);
     }
 
     /**
