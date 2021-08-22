@@ -1,5 +1,6 @@
 package com.pandy.gulimall.product.exception;
 
+import com.pandy.common.exception.BizCodeEnum;
 import com.pandy.common.utils.R;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.BindingResult;
@@ -30,7 +31,7 @@ public class ExceptionControllerAdvice {
             map.put(res.getField(), res.getDefaultMessage());
         });
 
-        return R.error("400").put("data", map);
+        return R.error(BizCodeEnum.VALID_EXCEPTION.getCode(), BizCodeEnum.VALID_EXCEPTION.getMsg()).put("data", map);
     }
 
     @ExceptionHandler(value = Throwable.class)
