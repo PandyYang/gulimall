@@ -192,4 +192,43 @@ public class AttrServiceImpl extends ServiceImpl<AttrDao, AttrEntity> implements
         return (List<AttrEntity>) attrEntities;
 
     }
+
+    @Override
+    public PageUtils getNoRelationAttr(Map<String, Object> params, Long attrgroupId) {
+        //1、当前分组只能关联自己所属的分类里面的所有属性
+        AttrGroupEntity attrGroupEntity = attrGroupDao.selectById(attrgroupId);
+        Long catelogId = attrGroupEntity.getCatelogId();
+        // 2、当前分组只能别的分组没有引用的属性																									并且这个分组的id不是我当前正在查的id
+        //2.1)、当前分类下的其他分组
+        List<AttrGroupEntity> group = attrGroupDao.selectList(new QueryWrapper<AttrGroupEntity>().eq("catelog_id", catelogId));
+        // 得到当前分类下面的所有分组id
+        List<Long> collect = group.stream().map(item -> {
+            return item.getAttrGroupId();
+        }).collect(Collectors.toList());
+
+        //2.2)、查询这些分组关联的属性
+        List<AttrAttrgroupRelationEntity> groupId = relationDao.selectList(new QueryWrapper<AttrAttrgroupRelationEntity>().in("attr_group_id", collect));
+        // 再次获取跟这些分组有关的属性id的集合
+        List<Long> attrIds = groupId.stream().map(item -> {
+            return item.getAttrId();
+        }).collect(Collectors.toList());
+
+        //2.3)、从当前分类的所有属性中移除这些属性；[因这些分组已经存在被选了 就不用再显示了]
+        QueryWrapper<AttrEntity> wrapper = new QueryWrapper<AttrEntity>().eq("catelog_id", catelogId).eq("attr_type", ProductConstant.AttrEnum.ATTR_TYPE_BASE.getCode());
+        if(attrIds != null && attrIds.size() > 0){
+            wrapper.notIn("attr_id", attrIds);
+        }
+        // 当搜索框中有key并且不为空的时候 进行模糊查询
+        String key = (String) params.get("key");
+        if(!org.springframework.util.StringUtils.isEmpty(key)){
+            wrapper.and((w)->{
+                w.eq("attr_id",key).or().like("attr_name",key);
+            });
+        }
+        // 将最后返回的结果进行封装
+        IPage<AttrEntity> page = this.page(new Query<AttrEntity>().getPage(params), wrapper);
+
+        PageUtils pageUtils = new PageUtils(page);
+        return pageUtils;
+    }
 }
