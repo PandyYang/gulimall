@@ -65,12 +65,6 @@
                 <version>${spring-cloud.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
-                <exclusions>
-                    <exclusion>
-                        <groupId>ch.qos.logback</groupId>
-                        <artifactId>logback-classic</artifactId>
-                    </exclusion>
-                </exclusions>
             </dependency>
         </dependencies>
     </dependencyManagement>
