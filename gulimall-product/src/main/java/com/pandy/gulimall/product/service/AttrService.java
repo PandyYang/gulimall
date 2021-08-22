@@ -20,5 +20,7 @@ public interface AttrService extends IService<AttrEntity> {
     PageUtils queryPage(Map<String, Object> params);
 
     void saveAttr(AttrVo attrVo) throws InvocationTargetException, IllegalAccessException;
+
+    PageUtils queryBaseAttr(Map<String, Object> params, Long categoryId);
 }
 

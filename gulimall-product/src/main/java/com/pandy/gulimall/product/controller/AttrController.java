@@ -6,11 +6,7 @@ import java.util.Map;
 
 import com.pandy.gulimall.product.vo.AttrVo;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.pandy.gulimall.product.entity.AttrEntity;
 import com.pandy.gulimall.product.service.AttrService;
@@ -31,6 +27,12 @@ import com.pandy.common.utils.R;
 public class AttrController {
     @Autowired
     private AttrService attrService;
+
+    @GetMapping("/base/list/{categoryId}")
+    public R baseAttrList(@RequestParam Map<String, Object> params, @PathVariable Long categoryId) {
+        PageUtils page = attrService.queryBaseAttr(params, categoryId);
+        return R.ok().put("page", page);
+    }
 
     /**
      * 列表
