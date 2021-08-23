@@ -3,6 +3,7 @@ package com.pandy.gulimall.product.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.pandy.common.utils.PageUtils;
 import com.pandy.gulimall.product.entity.AttrEntity;
+import com.pandy.gulimall.product.vo.AttrRespVo;
 import com.pandy.gulimall.product.vo.AttrVo;
 
 import java.lang.reflect.InvocationTargetException;
@@ -29,5 +30,9 @@ public interface AttrService extends IService<AttrEntity> {
     List<AttrEntity> getRelationAttr(Long attrgroupId);
 
     PageUtils getNoRelationAttr(Map<String, Object> params, Long attrgroupId);
+
+    AttrRespVo getAttrInfo(Long attrId) throws InvocationTargetException, IllegalAccessException;
+
+    void updateAttr(AttrVo attr) throws InvocationTargetException, IllegalAccessException;
 }
 

@@ -1,5 +1,6 @@
 package com.pandy.gulimall.product.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.pandy.common.constant.ProductConstant;
 import com.pandy.gulimall.product.dao.AttrAttrgroupRelationDao;
 import com.pandy.gulimall.product.dao.AttrGroupDao;
@@ -7,6 +8,7 @@ import com.pandy.gulimall.product.dao.CategoryDao;
 import com.pandy.gulimall.product.entity.AttrAttrgroupRelationEntity;
 import com.pandy.gulimall.product.entity.AttrGroupEntity;
 import com.pandy.gulimall.product.entity.CategoryEntity;
+import com.pandy.gulimall.product.service.CategoryService;
 import com.pandy.gulimall.product.vo.AttrRespVo;
 import com.pandy.gulimall.product.vo.AttrResponseVo;
 import com.pandy.gulimall.product.vo.AttrVo;
@@ -47,6 +49,9 @@ public class AttrServiceImpl extends ServiceImpl<AttrDao, AttrEntity> implements
 
     @Autowired
     AttrAttrgroupRelationDao relationDao;
+
+    @Autowired
+    CategoryService categoryService;
 
     @Override
     public PageUtils queryPage(Map<String, Object> params) {
@@ -230,5 +235,59 @@ public class AttrServiceImpl extends ServiceImpl<AttrDao, AttrEntity> implements
 
         PageUtils pageUtils = new PageUtils(page);
         return pageUtils;
+    }
+
+    @Override
+    public AttrRespVo getAttrInfo(Long attrId) throws InvocationTargetException, IllegalAccessException {
+        AttrRespVo attrRespVo = new AttrRespVo();
+
+        AttrEntity attrEntity = this.getById(attrId);
+        BeanUtils.copyProperties(attrRespVo, attrEntity);
+
+        AttrAttrgroupRelationEntity attrgroupRelationEntity = relationDao.selectOne(
+                new QueryWrapper<AttrAttrgroupRelationEntity>().eq("attr_id", attrId)
+        );
+        // 设置分组信息
+        if (attrgroupRelationEntity != null) {
+            attrRespVo.setAttrGroupId(attrgroupRelationEntity.getAttrGroupId());
+            AttrGroupEntity attrGroupEntity = attrGroupDao.selectById(attrgroupRelationEntity.getAttrGroupId());
+            if (attrGroupEntity != null) {
+                attrRespVo.setGroupName(attrGroupEntity.getAttrGroupName());
+            }
+        }
+
+        // 设置分类信息
+        Long catelogId = attrEntity.getCatelogId();
+        Long[] catelogPath = categoryService.findCatelogPath(catelogId);
+        attrRespVo.setCatelogPath(catelogPath);
+        CategoryEntity categoryEntity = categoryDao.selectById(catelogId);
+        if (categoryEntity != null) {
+            attrRespVo.setCatelogName(categoryEntity.getName());
+        }
+        return attrRespVo;
+    }
+
+    @Transactional
+    @Override
+    public void updateAttr(AttrVo attr) throws InvocationTargetException, IllegalAccessException {
+        AttrEntity attrEntity = new AttrEntity();
+        BeanUtils.copyProperties(attrEntity, attr);
+        this.updateById(attrEntity);
+
+        AttrAttrgroupRelationEntity relationEntity = new AttrAttrgroupRelationEntity();
+        relationEntity.setAttrGroupId(attr.getAttrGroupId());
+        relationEntity.setAttrId(attr.getAttrId());
+
+        Integer count = relationDao.selectCount(new QueryWrapper<AttrAttrgroupRelationEntity>().eq("attr_id", attr.getAttrId()));
+        if (count > 0) {
+            //1.修改分组
+            relationDao.update(
+                    relationEntity,
+                    new UpdateWrapper<AttrAttrgroupRelationEntity>()
+                            .eq("attr_id", attr.getAttrId())
+            );
+        } else {
+            relationDao.insert(relationEntity);
+        }
     }
 }
