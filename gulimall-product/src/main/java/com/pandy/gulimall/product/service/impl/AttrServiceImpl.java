@@ -9,6 +9,7 @@ import com.pandy.gulimall.product.entity.AttrAttrgroupRelationEntity;
 import com.pandy.gulimall.product.entity.AttrGroupEntity;
 import com.pandy.gulimall.product.entity.CategoryEntity;
 import com.pandy.gulimall.product.service.CategoryService;
+import com.pandy.gulimall.product.vo.AttrGroupRelationVo;
 import com.pandy.gulimall.product.vo.AttrRespVo;
 import com.pandy.gulimall.product.vo.AttrResponseVo;
 import com.pandy.gulimall.product.vo.AttrVo;
@@ -18,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -292,5 +294,22 @@ public class AttrServiceImpl extends ServiceImpl<AttrDao, AttrEntity> implements
         } else {
             relationDao.insert(relationEntity);
         }
+    }
+
+    @Override
+    public void deleteRelation(AttrGroupRelationVo[] vos) {
+
+        List<AttrAttrgroupRelationEntity> entities = Arrays.asList(vos).stream().map((item) -> {
+            AttrAttrgroupRelationEntity relationEntity = new AttrAttrgroupRelationEntity();
+            try {
+                BeanUtils.copyProperties(relationEntity, item);
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            } catch (InvocationTargetException e) {
+                e.printStackTrace();
+            }
+            return relationEntity;
+        }).collect(Collectors.toList());
+        relationDao.deleteBatchRelation(entities);
     }
 }

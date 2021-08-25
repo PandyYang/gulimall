@@ -123,4 +123,10 @@ public class AttrGroupController {
         return R.ok();
     }
 
+    @RequestMapping("attr/relation/delete")
+    public R deleteRelation(@RequestBody AttrGroupRelationVo[] vos) {
+        attrService.deleteRelation(vos);
+        return R.ok();
+    }
+
 }
