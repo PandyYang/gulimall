@@ -72,10 +72,13 @@ public class AttrServiceImpl extends ServiceImpl<AttrDao, AttrEntity> implements
         this.save(attrEntity);
 
         // 保存关联关系
-        AttrAttrgroupRelationEntity attrAttrgroupRelationEntity = new AttrAttrgroupRelationEntity();
-        attrAttrgroupRelationEntity.setAttrId(attrVo.getAttrId());
-        attrAttrgroupRelationEntity.setAttrGroupId(attrVo.getAttrGroupId());
-        attrAttrgroupRelationDao.insert(attrAttrgroupRelationEntity);
+        if (attrVo.getAttrType() == ProductConstant.AttrEnum.ATTR_TYPE_BASE.getCode() && attrVo.getAttrGroupId() != null) {
+            AttrAttrgroupRelationEntity attrAttrgroupRelationEntity = new AttrAttrgroupRelationEntity();
+            attrAttrgroupRelationEntity.setAttrId(attrEntity.getAttrId());
+            attrAttrgroupRelationEntity.setAttrGroupId(attrVo.getAttrGroupId());
+            attrAttrgroupRelationEntity.setAttrSort(0);
+            attrAttrgroupRelationDao.insert(attrAttrgroupRelationEntity);
+        }
     }
 
     @Override
