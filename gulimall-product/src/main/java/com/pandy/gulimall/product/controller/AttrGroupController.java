@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+import com.mysql.cj.log.Log;
 import com.pandy.gulimall.product.entity.AttrEntity;
 import com.pandy.gulimall.product.service.AttrAttrgroupRelationService;
 import com.pandy.gulimall.product.service.AttrService;
@@ -128,5 +129,13 @@ public class AttrGroupController {
         attrService.deleteRelation(vos);
         return R.ok();
     }
+
+//    @GetMapping("/{catelogId}/withattr")
+//    public R getAttrGroupWithAttrs(@PathVariable Long catelogId) {
+//
+//        // 查询当前分类下的所有属性分组
+//        attrGroupService.getAttrGroupWithAttrByCatelogId()
+//        // 每个属性分组的所有属性
+//    }
 
 }

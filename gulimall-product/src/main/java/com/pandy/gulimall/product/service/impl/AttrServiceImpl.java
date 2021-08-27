@@ -5,9 +5,7 @@ import com.pandy.common.constant.ProductConstant;
 import com.pandy.gulimall.product.dao.AttrAttrgroupRelationDao;
 import com.pandy.gulimall.product.dao.AttrGroupDao;
 import com.pandy.gulimall.product.dao.CategoryDao;
-import com.pandy.gulimall.product.entity.AttrAttrgroupRelationEntity;
-import com.pandy.gulimall.product.entity.AttrGroupEntity;
-import com.pandy.gulimall.product.entity.CategoryEntity;
+import com.pandy.gulimall.product.entity.*;
 import com.pandy.gulimall.product.service.CategoryService;
 import com.pandy.gulimall.product.vo.AttrGroupRelationVo;
 import com.pandy.gulimall.product.vo.AttrRespVo;
@@ -32,7 +30,6 @@ import com.pandy.common.utils.PageUtils;
 import com.pandy.common.utils.Query;
 
 import com.pandy.gulimall.product.dao.AttrDao;
-import com.pandy.gulimall.product.entity.AttrEntity;
 import com.pandy.gulimall.product.service.AttrService;
 import org.springframework.transaction.annotation.Transactional;
 

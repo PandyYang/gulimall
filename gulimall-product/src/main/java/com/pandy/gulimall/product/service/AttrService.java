@@ -3,6 +3,7 @@ package com.pandy.gulimall.product.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.pandy.common.utils.PageUtils;
 import com.pandy.gulimall.product.entity.AttrEntity;
+import com.pandy.gulimall.product.entity.ProductAttrValueEntity;
 import com.pandy.gulimall.product.vo.AttrGroupRelationVo;
 import com.pandy.gulimall.product.vo.AttrRespVo;
 import com.pandy.gulimall.product.vo.AttrVo;
