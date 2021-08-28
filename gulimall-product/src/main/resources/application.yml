@@ -25,4 +25,4 @@ server:
   port: 11000
 logging:
   level:
-    com.pandy.gulimall.product: debug
+    com.pandy.gulimall.*: debug
