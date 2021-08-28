@@ -6,34 +6,40 @@ spring:
           uri: https://www.baidu.com
           predicates:
             - Query=url,baidu
+
         - id: qq_route
           uri: https://www.qq.com
           predicates:
             - Query=url,qq
-        - id: ware_route
-          uri: lb://mall-ware
-          predicates:
-            - Path=/api/ware/**
-          filters:
-            - RewritePath=/api/(?<segment>.*), /$\{segment}
+
         - id: product_route
           uri: lb://gulimall-product
           predicates:
             - Path=/api/product/**
           filters:
             - RewritePath=/api/(?<segment>.*),/$\{segment}
+
         - id: third_part_route
           uri: lb://gulimall-third-part
           predicates:
             - Path=/api/thirdpart/**
           filters:
             - RewritePath=/api/thirdpart/(?<segment>.*),/$\{segment}
+
         - id: member_route
           uri: lb://gulimall-member
           predicates:
             - Path=/api/member/**
           filters:
             - RewritePath=/api/(?<segment>.*),/$\{segment}
+
+        - id: ware_route
+          uri: lb://gulimall-ware
+          predicates:
+            - Path=/api/ware/**
+          filters:
+            - RewritePath=/api/(?<segment>.*), /$\{segment}
+
         - id: admin_route
           uri: lb://renren-fast
           predicates:
