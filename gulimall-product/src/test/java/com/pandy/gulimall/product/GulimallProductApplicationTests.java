@@ -20,7 +20,7 @@ public class GulimallProductApplicationTests {
     BrandService brandService;
 
     @Test
-    void contextLoads() {
+    public void contextLoads() {
 
         BrandEntity brandEntity = new BrandEntity();
 //        brandEntity.setDescript("123");
@@ -36,6 +36,11 @@ public class GulimallProductApplicationTests {
 
         List<BrandEntity> list = brandService.list(new QueryWrapper<BrandEntity>().eq("brand_id", 1L));
         list.forEach(System.out::println);
+    }
+
+    @Test
+    public void test() {
+        System.out.println(123);
     }
 
 }

@@ -2,6 +2,7 @@ package com.pandy.gulimall.product.service.impl;
 
 import com.pandy.common.to.SkuReductionTo;
 import com.pandy.common.to.SpuBoundTo;
+import com.pandy.common.to.es.SkuEsModel;
 import com.pandy.common.utils.R;
 import com.pandy.gulimall.product.entity.*;
 import com.pandy.gulimall.product.feign.CouponFeignService;
@@ -12,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -53,6 +55,12 @@ public class SpuInfoServiceImpl extends ServiceImpl<SpuInfoDao, SpuInfoEntity> i
 
     @Autowired
     CouponFeignService couponFeignService;
+
+    @Autowired
+    BrandService brandService;
+
+    @Autowired
+    CategoryService categoryService;
 
     @Override
     public PageUtils queryPage(Map<String, Object> params) {
@@ -183,6 +191,51 @@ public class SpuInfoServiceImpl extends ServiceImpl<SpuInfoDao, SpuInfoEntity> i
     @Override
     public void saveBaseSpuInfo(SpuInfoEntity spuInfoEntity) {
         this.baseMapper.insert(spuInfoEntity);
+    }
+
+    @Override
+    public void up(Long spuId) {
+
+        // 组装需要的数据
+        List<SkuInfoEntity> skus = skuInfoService.getSkusBySpuId(spuId);
+
+        //TODO 查询当前的所有可以被用来检索的规格属性
+
+        List<SkuEsModel> upProducts = skus.stream().map(sku -> {
+            SkuEsModel skuEsModel = new SkuEsModel();
+            try {
+                BeanUtils.copyProperties(skuEsModel, sku);
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            } catch (InvocationTargetException e) {
+                e.printStackTrace();
+            }
+
+            skuEsModel.setSkuPrice(sku.getPrice());
+            skuEsModel.setSkuImg(sku.getSkuDefaultImg());
+
+            //TODO  发送远程调用 库存系统是否存在库存
+
+            //TODO  热度评分 0
+
+            //TODO  品牌和分类的名字信息
+            BrandEntity brand = brandService.getById(skuEsModel.getBrandId());
+            skuEsModel.setBrandName(brand.getName());
+            skuEsModel.setBrandImg(brand.getLogo());
+
+
+
+
+            CategoryEntity category = categoryService.getById(skuEsModel.getCatalogId());
+            skuEsModel.setCatalogName(category.getName());
+
+            return skuEsModel;
+        }).collect(Collectors.toList());
+
+        // 将数据发送给es
+
+
+
     }
 
 
