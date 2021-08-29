@@ -18,7 +18,18 @@ import java.util.Map;
  *
  * @author Mark sunlightcs@gmail.com
  */
-public class R extends HashMap<String, Object> {
+public class R<T> extends HashMap<String, Object> {
+
+	private T data;
+
+	public T getData() {
+		return data;
+	}
+
+	public void setData(T data) {
+		this.data = data;
+	}
+
 	private static final long serialVersionUID = 1L;
 
 	public R() {
@@ -56,6 +67,7 @@ public class R extends HashMap<String, Object> {
 	public static R ok() {
 		return new R();
 	}
+
 
 	public R put(String key, Object value) {
 		super.put(key, value);

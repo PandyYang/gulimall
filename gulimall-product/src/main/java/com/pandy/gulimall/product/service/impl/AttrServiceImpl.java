@@ -309,4 +309,9 @@ public class AttrServiceImpl extends ServiceImpl<AttrDao, AttrEntity> implements
         }).collect(Collectors.toList());
         relationDao.deleteBatchRelation(entities);
     }
+
+    @Override
+    public List<Long> selectSearchAttrs(List<Long> ids) {
+        return this.baseMapper.selectSearchAttrs(ids);
+    }
 }

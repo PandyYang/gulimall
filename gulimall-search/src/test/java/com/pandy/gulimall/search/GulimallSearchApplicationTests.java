@@ -5,8 +5,11 @@ import com.pandy.gulimall.search.config.GulimallElasticSearchConfig;
 import lombok.Data;
 import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.action.index.IndexResponse;
+import org.elasticsearch.action.search.SearchRequest;
+import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.common.xcontent.XContentType;
+import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,6 +53,16 @@ public class GulimallSearchApplicationTests {
         IndexResponse index = restHighLevelClient.index(indexRequest, GulimallElasticSearchConfig.COMMON_OPTIONS);
 
         System.out.println("index = " + index);
+    }
+
+    @Test
+    public void searchData() throws IOException {
+        SearchRequest searchRequest = new SearchRequest();
+        searchRequest.indices("bank");
+        SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
+        searchRequest.source(searchSourceBuilder);
+
+        SearchResponse search = restHighLevelClient.search(searchRequest, GulimallElasticSearchConfig.COMMON_OPTIONS);
     }
 
 }

@@ -98,7 +98,7 @@ public class SkuEsModel {
 
     private Long saleCount;
 
-    private Boolean hotStock;
+    private Boolean hasStock;
 
     private Long hotScore;
 
@@ -115,7 +115,7 @@ public class SkuEsModel {
     private List<Attrs> attrs;
 
     @Data
-    static class Attrs {
+    public static class Attrs {
         private Long attrId;
 
         private String attrName;

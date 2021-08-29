@@ -1,14 +1,12 @@
 package com.pandy.gulimall.ware.controller;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
+import com.pandy.common.to.es.SkuHasStockVo;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.pandy.gulimall.ware.entity.WareSkuEntity;
 import com.pandy.gulimall.ware.service.WareSkuService;
@@ -29,6 +27,14 @@ import com.pandy.common.utils.R;
 public class WareSkuController {
     @Autowired
     private WareSkuService wareSkuService;
+
+    @PostMapping("/hasStock")
+    public R<List<SkuHasStockVo>> getSkusStock(@RequestBody List<Long> skuIds) {
+        List<SkuHasStockVo> skusStock = wareSkuService.getSkusStock(skuIds);
+        R<List<SkuHasStockVo>> ok = R.ok();
+        ok.setData(skusStock);
+        return ok;
+    }
 
     /**
      * 列表

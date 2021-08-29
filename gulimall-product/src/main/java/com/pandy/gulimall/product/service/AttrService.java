@@ -38,5 +38,12 @@ public interface AttrService extends IService<AttrEntity> {
     void updateAttr(AttrVo attr) throws InvocationTargetException, IllegalAccessException;
 
     void deleteRelation(AttrGroupRelationVo[] vos);
+
+    /**
+     * 在指定的所有属性集合中 找出所有的上架类型
+     * @param ids
+     * @return
+     */
+    List<Long> selectSearchAttrs(List<Long> ids);
 }
 
