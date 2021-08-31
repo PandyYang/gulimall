@@ -1,5 +1,6 @@
 package com.pandy.gulimall.product.service.impl;
 
+import com.alibaba.fastjson.TypeReference;
 import com.pandy.common.constant.ProductConstant;
 import com.pandy.common.to.SkuReductionTo;
 import com.pandy.common.to.SpuBoundTo;
@@ -68,6 +69,9 @@ public class SpuInfoServiceImpl extends ServiceImpl<SpuInfoDao, SpuInfoEntity> i
 
     @Autowired
     SearchFeignService searchFeignService;
+
+    @Autowired
+    SpuInfoService spuInfoService;
 
     @Override
     public PageUtils queryPage(Map<String, Object> params) {
@@ -252,10 +256,10 @@ public class SpuInfoServiceImpl extends ServiceImpl<SpuInfoDao, SpuInfoEntity> i
             //TODO  发送远程调用 库存系统是否存在库存
             Map<Long, Boolean> stockMap = null;
             try {
-                R<List<SkuHasStockVo>> skusStock = wareFeignService.getSkusStock(skuIdList);
-
-                stockMap = skusStock.getData().stream().collect(Collectors.toMap(SkuHasStockVo::getSkuId,
-                        SkuHasStockVo::getHasStock));
+                R hasStock = wareFeignService.getSkusStock(skuIdList);
+                // 构造器受保护 所以写成内部类对象
+                stockMap = hasStock.getData(new TypeReference<List<SkuHasStockVo>>(){}).stream().collect(Collectors.toMap(SkuHasStockVo::getSkuId, item -> item.getHasStock()));
+                log.warn("服务调用成功" + hasStock);
 
             }catch (Exception e) {
                 log.error("库存服务器异常:{}", e);
