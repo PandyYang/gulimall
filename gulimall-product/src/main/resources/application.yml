@@ -13,6 +13,19 @@ spring:
       secret-key: GYNIZhsUolshOdHUfflSdlv8XWHjWB
       oss:
         endpoint: oss-cn-beijing.aliyuncs.com
+  thymeleaf:
+    cache: false
+    suffix: .html
+    prefix: classpath:/templates/
+    servlet:
+      content-type: text/html
+    mode: LEGACYHTML5
+  mvc:
+    static-path-pattern: /static/**    #静态资源的请求方式
+    resources:
+      static-locations: classpath:/static/  # 静态资源的配置位置，可以写成一个数组配置多个目录
+
+
 
 mybatis-plus:
   mapper-locations: classpath*:/mapper/**/*.xml
