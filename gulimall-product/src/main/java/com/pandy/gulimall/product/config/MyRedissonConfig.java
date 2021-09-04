@@ -27,6 +27,8 @@ public class MyRedissonConfig {
         Config config = new Config();
         config.useSingleServer().setAddress("redis://47.95.216.30:6379");
 
+        config.useSingleServer().setConnectionMinimumIdleSize(10);
+
         // 根据config创建出的
         return Redisson.create(config);
     }
