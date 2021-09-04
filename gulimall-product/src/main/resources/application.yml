@@ -24,8 +24,9 @@ spring:
     static-path-pattern: /static/**    #静态资源的请求方式
     resources:
       static-locations: classpath:/static/  # 静态资源的配置位置，可以写成一个数组配置多个目录
-
-
+  redis:
+    host: 47.95.216.30
+    port: 6379
 
 mybatis-plus:
   mapper-locations: classpath*:/mapper/**/*.xml
@@ -39,3 +40,4 @@ server:
 logging:
   level:
     com.pandy.gulimall.*: debug
+
