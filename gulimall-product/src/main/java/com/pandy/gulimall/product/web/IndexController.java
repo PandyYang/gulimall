@@ -4,10 +4,7 @@ import com.pandy.gulimall.product.entity.CategoryEntity;
 import com.pandy.gulimall.product.service.CategoryService;
 import com.pandy.gulimall.product.vo.Catelog2Vo;
 import lombok.SneakyThrows;
-import org.redisson.api.RCountDownLatch;
-import org.redisson.api.RLock;
-import org.redisson.api.RReadWriteLock;
-import org.redisson.api.RedissonClient;
+import org.redisson.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Controller;
@@ -160,5 +157,21 @@ public class IndexController {
 		door.countDown();
 
 		return id + "班的人都走了...";
+	}
+
+	@GetMapping("/park")
+	@ResponseBody
+	public String park() throws InterruptedException {
+		RSemaphore park = redissonClient.getSemaphore("park");
+		park.acquire();// 获取一个信号 占一个车位
+		return "ok";
+	}
+
+	@GetMapping("/go")
+	@ResponseBody
+	public String go() throws InterruptedException {
+		RSemaphore park = redissonClient.getSemaphore("park");
+		park.release();// 释放一个信号
+		return "ok";
 	}
 }
