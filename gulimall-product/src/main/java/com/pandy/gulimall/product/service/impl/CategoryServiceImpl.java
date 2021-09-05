@@ -2,32 +2,30 @@ package com.pandy.gulimall.product.service.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
-import com.pandy.gulimall.product.service.CategoryBrandRelationService;
-import com.pandy.gulimall.product.vo.Catalog3Vo;
-import com.pandy.gulimall.product.vo.Catelog2Vo;
-import org.apache.commons.lang.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.Cacheable;
-import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.core.StringRedisTemplate;
-import org.springframework.data.redis.core.script.DefaultRedisScript;
-import org.springframework.stereotype.Service;
-
-import java.sql.Time;
-import java.util.*;
-import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
-
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.pandy.common.utils.PageUtils;
 import com.pandy.common.utils.Query;
-
 import com.pandy.gulimall.product.dao.CategoryDao;
 import com.pandy.gulimall.product.entity.CategoryEntity;
+import com.pandy.gulimall.product.service.CategoryBrandRelationService;
 import com.pandy.gulimall.product.service.CategoryService;
+import com.pandy.gulimall.product.vo.Catalog3Vo;
+import com.pandy.gulimall.product.vo.Catelog2Vo;
+import org.apache.commons.lang.StringUtils;
+import org.redisson.api.RLock;
+import org.redisson.api.RedissonClient;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.data.redis.core.script.DefaultRedisScript;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.*;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 
 @Service("categoryService")
@@ -41,6 +39,9 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
 
     @Autowired
     StringRedisTemplate stringRedisTemplate;
+
+    @Autowired
+    RedissonClient redissonClient;
 
     @Override
     public PageUtils queryPage(Map<String, Object> params) {
@@ -61,11 +62,11 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
         List<CategoryEntity> collect = entities.stream()
                 .filter(res -> res.getParentCid() == 0)
                 .map((menu) -> {
-             menu.setChildren(getChildrens(menu, entities));
-             return menu;
-        }).sorted((menu1, menu2) -> {
-            return (menu1.getSort() == null ? 0 : menu1.getSort()) - (menu2.getSort() == null ? 0 : menu2.getSort());
-        }).collect(Collectors.toList());
+                    menu.setChildren(getChildrens(menu, entities));
+                    return menu;
+                }).sorted((menu1, menu2) -> {
+                    return (menu1.getSort() == null ? 0 : menu1.getSort()) - (menu2.getSort() == null ? 0 : menu2.getSort());
+                }).collect(Collectors.toList());
 
         return collect;
     }
@@ -87,6 +88,7 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
 
     /**
      * 级联更新所有关联的数据
+     *
      * @param category
      */
     @Transactional
@@ -94,10 +96,15 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
     public void updateCascade(CategoryEntity category) {
         this.updateById(category);
         categoryBrandRelationService.updateCategory(category.getCatId(), category.getName());
-    }
 
+        // 修改缓存数据
+        // 删除缓存数据 等待下次主动查询进行更新
+}
+
+    @Cacheable(value = {"category"}, key = "#root.method.name")
     @Override
     public List<CategoryEntity> getLevel1Categorys() {
+        System.out.println("getLevel1Categorys");
         List<CategoryEntity> categoryEntities = baseMapper.selectList(new QueryWrapper<CategoryEntity>().eq("parent_cid", 0));
         return categoryEntities;
     }
@@ -106,6 +113,7 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
      * 空结果缓存 解决缓存穿透
      * 设置过期时间 解决缓存雪崩
      * 加锁 解决缓存击穿
+     *
      * @return
      */
 
@@ -118,7 +126,8 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
 
             return catelogJsonFromDB;
         }
-        Map<String, List<Catelog2Vo>> stringListMap = JSON.parseObject(catalogJson, new TypeReference<Map<String, List<Catelog2Vo>>>(){});
+        Map<String, List<Catelog2Vo>> stringListMap = JSON.parseObject(catalogJson, new TypeReference<Map<String, List<Catelog2Vo>>>() {
+        });
         return stringListMap;
     }
 
@@ -126,43 +135,63 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
         synchronized (this) {
             String catalogJson = stringRedisTemplate.opsForValue().get("catalogJson");
             if (!StringUtils.isEmpty(catalogJson)) {
-                Map<String, List<Catelog2Vo>> stringListMap = JSON.parseObject(catalogJson, new TypeReference<Map<String, List<Catelog2Vo>>>(){});
+                Map<String, List<Catelog2Vo>> stringListMap = JSON.parseObject(catalogJson, new TypeReference<Map<String, List<Catelog2Vo>>>() {
+                });
                 return stringListMap;
             }
             return getDataFromDB();
         }
     }
 
+    /**
+     * 缓存中的数据和数据库中的保持一致
+     * 缓存数据库一致性问题
+     * 1》双写模式
+     * 2》失效模式
+     * @return
+     * @throws InterruptedException
+     */
     public Map<String, List<Catelog2Vo>> getCatelogJsonFromDBWithRedisLock() throws InterruptedException {
 
-            //1.抢占分布式锁  原子命令
+        RLock lock = redissonClient.getLock("catalogJson-lock");
+        lock.lock();
 
-        String uuid = UUID.randomUUID().toString();
-        Boolean lock = stringRedisTemplate.opsForValue().setIfAbsent("lock", "111", 300, TimeUnit.SECONDS);
-        if (lock) {
-
-            // 2.设置过期时间加锁成功 获取数据释放锁 [分布式下必须是Lua脚本删锁,不然会因为业务处理时间、网络延迟等等引起数据还没返回锁过期或者返回的过程中过期 然后把别人的锁删了]
+        // 2.设置过期时间加锁成功 获取数据释放锁 [分布式下必须是Lua脚本删锁,不然会因为业务处理时间、网络延迟等等引起数据还没返回锁过期或者返回的过程中过期 然后把别人的锁删了]
             Map<String, List<Catelog2Vo>> data;
             try {
                 data = getDataFromDB();
             } finally {
-//			stringRedisTemplate.delete("lock");
-                String lockValue = stringRedisTemplate.opsForValue().get("lock");
-
-                // 删除也必须是原子操作 Lua脚本操作 删除成功返回1 否则返回0
-                String script = "if redis.call('get',KEYS[1]) == ARGV[1] then return redis.call('del',KEYS[1]) else return 0 end";
-                // 原子删锁
-                stringRedisTemplate.execute(new DefaultRedisScript<>(script, Long.class), Arrays.asList("lock"), uuid);
+                lock.unlock();
             }
             return data;
-        } else {
-            Thread.sleep(200);
-            // 加锁失败
-            return getCatelogJsonFromDBWithRedisLock();
-        }
-
-
     }
+//
+//    public Map<String, List<Catelog2Vo>> getCatelogJsonFromDBWithRedisLock() throws InterruptedException {
+//
+//        //1.抢占分布式锁  原子命令
+//
+//        String uuid = UUID.randomUUID().toString();
+//        Boolean lock = stringRedisTemplate.opsForValue().setIfAbsent("lock", "111", 300, TimeUnit.SECONDS);
+//        if (lock) {
+//            // 2.设置过期时间加锁成功 获取数据释放锁 [分布式下必须是Lua脚本删锁,不然会因为业务处理时间、网络延迟等等引起数据还没返回锁过期或者返回的过程中过期 然后把别人的锁删了]
+//            Map<String, List<Catelog2Vo>> data;
+//            try {
+//                data = getDataFromDB();
+//            } finally {
+////			stringRedisTemplate.delete("lock");
+//                String lockValue = stringRedisTemplate.opsForValue().get("lock");
+//                // 删除也必须是原子操作 Lua脚本操作 删除成功返回1 否则返回0
+//                String script = "if redis.call('get',KEYS[1]) == ARGV[1] then return redis.call('del',KEYS[1]) else return 0 end";
+//                // 原子删锁
+//                stringRedisTemplate.execute(new DefaultRedisScript<>(script, Long.class), Arrays.asList("lock"), uuid);
+//            }
+//            return data;
+//        } else {
+//            Thread.sleep(200);
+//            // 加锁失败
+//            return getCatelogJsonFromDBWithRedisLock();
+//        }
+//    }
 
     private Map<String, List<Catelog2Vo>> getDataFromDB() {
         List<CategoryEntity> entityList = baseMapper.selectList(null);
@@ -215,11 +244,12 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
 
         List<CategoryEntity> children = all.stream()
                 .filter(item -> Objects.equals(item.getParentCid(), root.getCatId()))
-                .map(menu -> { menu.setChildren(getChildrens(menu, all));
-            return menu;
-        }).sorted((res1, res2) -> {
-            return (res1.getSort() == null ? 0 : res1.getSort()) - (res2.getSort() == null ? 0 : res2.getSort());
-        }).collect(Collectors.toList());
+                .map(menu -> {
+                    menu.setChildren(getChildrens(menu, all));
+                    return menu;
+                }).sorted((res1, res2) -> {
+                    return (res1.getSort() == null ? 0 : res1.getSort()) - (res2.getSort() == null ? 0 : res2.getSort());
+                }).collect(Collectors.toList());
 
         return children;
     }
