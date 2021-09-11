@@ -52,7 +52,7 @@ public class GulimallSearchApplicationTests {
 
         IndexResponse index = restHighLevelClient.index(indexRequest, GulimallElasticSearchConfig.COMMON_OPTIONS);
 
-        System.out.println("index = " + index);
+        System.out.println("/static/index = " + index);
     }
 
     @Test

@@ -29,7 +29,7 @@ import java.util.List;
  *       },
  *       "skuImg": {
  *         "type": "keyword",
- *         "index": false,
+ *         "/static/index": false,
  *         "doc_values": false
  *       },
  *       "saleCount": {
@@ -49,17 +49,17 @@ import java.util.List;
  *       },
  *       "brandName": {
  *         "type": "keyword",
- *         "index": false,
+ *         "/static/index": false,
  *         "doc_values": false
  *       },
  *       "brandImg": {
  *         "type": "keyword",
- *         "index": false,
+ *         "/static/index": false,
  *         "doc_values": false
  *       },
  *       "catalogName": {
  *         "type": "keyword",
- *         "index": false,
+ *         "/static/index": false,
  *         "doc_values": false
  *       },
  *       "attrs": {
@@ -70,7 +70,7 @@ import java.util.List;
  *           },
  *           "attrName": {
  *             "type": "keyword",
- *             "index": false,
+ *             "/static/index": false,
  *             "doc_values": false
  *           },
  *           "attrValue": {

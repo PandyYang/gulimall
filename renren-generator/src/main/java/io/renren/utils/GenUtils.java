@@ -333,7 +333,7 @@ public class GenUtils {
             return className.toLowerCase() + "_menu.sql";
         }
 
-        if (template.contains("index.vue.vm")) {
+        if (template.contains("/static/index.vue.vm")) {
             return "main" + File.separator + "resources" + File.separator + "src" + File.separator + "views" + File.separator + "modules" +
                     File.separator + moduleName + File.separator + className.toLowerCase() + ".vue";
         }

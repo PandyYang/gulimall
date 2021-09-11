@@ -41,12 +41,12 @@ public class IndexController {
 		// 获取一级分类所有缓存
 		List<CategoryEntity> categorys = categoryService.getLevel1Categorys();
 		model.addAttribute("categorys", categorys);
-		return "index";
+		return "/index";
 	}
 
 	@SneakyThrows
 	@ResponseBody
-	@RequestMapping("index/json/catalog.json")
+	@RequestMapping("/index/json/catalog.json")
 	public Map<String, List<Catelog2Vo>> getCatlogJson() throws InterruptedException {
 
 		Map<String, List<Catelog2Vo>> map = null;
