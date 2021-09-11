@@ -144,8 +144,8 @@ public class MallSearchServiceImpl implements MallSearchService {
             sourceBuilder.sort(s[0], order);
         }
         // 2.分页 pageSize ： 5
-        sourceBuilder.from((Param.getPageNum()-1) * EsConstant.PRODUCT_PASIZE);
-        sourceBuilder.size(EsConstant.PRODUCT_PASIZE);
+        sourceBuilder.from(0);
+        sourceBuilder.size(10);
 
         // 3.高亮
         if(!StringUtils.isEmpty(Param.getKeyword())){
