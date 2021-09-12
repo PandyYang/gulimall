@@ -20,7 +20,7 @@ import java.util.List;
  */
 
 @Slf4j
-@RequestMapping("/search/save")
+@RequestMapping("/search")
 @RestController
 public class ElasticSaveController {
 
