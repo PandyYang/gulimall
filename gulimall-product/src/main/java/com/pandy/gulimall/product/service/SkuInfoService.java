@@ -3,6 +3,7 @@ package com.pandy.gulimall.product.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.pandy.common.utils.PageUtils;
 import com.pandy.gulimall.product.entity.SkuInfoEntity;
+import com.pandy.gulimall.product.vo.SkuItemVo;
 
 import java.util.List;
 import java.util.Map;
@@ -21,5 +22,7 @@ public interface SkuInfoService extends IService<SkuInfoEntity> {
     void saveSkuInfo(SkuInfoEntity skuInfoEntity);
 
     List<SkuInfoEntity> getSkusBySpuId(Long spuId);
+
+    SkuItemVo item(Long skuId);
 }
 

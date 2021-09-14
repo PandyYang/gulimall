@@ -1,5 +1,12 @@
 package com.pandy.gulimall.product.service.impl;
 
+import com.pandy.gulimall.product.entity.SkuImagesEntity;
+import com.pandy.gulimall.product.entity.SpuInfoDescEntity;
+import com.pandy.gulimall.product.service.*;
+import com.pandy.gulimall.product.vo.ItemSaleAttrVo;
+import com.pandy.gulimall.product.vo.SkuItemVo;
+import com.pandy.gulimall.product.vo.SpuItemAttrGroup;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -12,11 +19,22 @@ import com.pandy.common.utils.Query;
 
 import com.pandy.gulimall.product.dao.SkuInfoDao;
 import com.pandy.gulimall.product.entity.SkuInfoEntity;
-import com.pandy.gulimall.product.service.SkuInfoService;
 
 
 @Service("skuInfoService")
 public class SkuInfoServiceImpl extends ServiceImpl<SkuInfoDao, SkuInfoEntity> implements SkuInfoService {
+
+    @Autowired
+    SkuImagesService imagesService;
+
+    @Autowired
+    SpuInfoDescService descService;
+
+    @Autowired
+    AttrGroupService attrGroupService;
+
+    @Autowired
+    SkuSaleAttrValueService skuSaleAttrValueService;
 
     @Override
     public PageUtils queryPage(Map<String, Object> params) {
@@ -40,6 +58,29 @@ public class SkuInfoServiceImpl extends ServiceImpl<SkuInfoDao, SkuInfoEntity> i
 
         List<SkuInfoEntity> list = this.list(new QueryWrapper<SkuInfoEntity>().eq("spu_id", spuId));
         return list;
+    }
+
+    @Override
+    public SkuItemVo item(Long skuId) {
+        SkuItemVo skuItemVo = new SkuItemVo();
+        // sku基本信息
+        SkuInfoEntity info = getById(skuId);
+        skuItemVo.setInfo(info);
+        Long catalogId = info.getCatalogId();
+        Long spuId = info.getSpuId();
+        // sku图片信息
+        List<SkuImagesEntity> imagesEntities = imagesService.getImagesBySkuId(skuId);
+        skuItemVo.setImages(imagesEntities);
+        // spu销售属性组合
+        List<ItemSaleAttrVo> saleAttrVos = skuSaleAttrValueService.getSaleAttrsBuSpuId(spuId);
+        skuItemVo.setSaleAttr(saleAttrVos);
+        // spu的介绍
+        List<SpuItemAttrGroup> attrGroups =  attrGroupService.getAttrGroupWithAttrBySpuId(spuId, catalogId);
+        SpuInfoDescEntity spuInfoDesc = descService.getById(skuId);
+        skuItemVo.setDesc(spuInfoDesc);
+        skuItemVo.setGroupAttrs(attrGroups);
+        // 获取spu的规格参数信息
+        return skuItemVo;
     }
 
 }
