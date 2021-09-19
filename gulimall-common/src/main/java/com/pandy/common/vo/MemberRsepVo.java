@@ -1,28 +1,19 @@
-package com.pandy.gulimall.member.entity;
+package com.pandy.common.vo;
 
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
+import lombok.ToString;
 
 import java.io.Serializable;
 import java.util.Date;
 
 /**
- * 会员
- *
- * @author firenay
- * @email 1046762075@qq.com
- * @date 2020-05-30 00:49:16
+ * <p>Title: MemberRsepVo</p>
+ * Description：
+ * date：2020/6/26 17:17
  */
+@ToString
 @Data
-@TableName("ums_member")
-public class MemberEntity implements Serializable {
-	private static final long serialVersionUID = 1L;
-
-	/**
-	 * id
-	 */
-	@TableId
+public class MemberRsepVo implements Serializable {
 	private Long id;
 	/**
 	 * 会员等级id
