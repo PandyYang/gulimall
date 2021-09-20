@@ -32,7 +32,7 @@ public class Smscomponent {
         headers.put("Authorization", "APPCODE " + appcode);
         Map<String, String> querys = new HashMap<String, String>();
         querys.put("mobile", phone);
-        querys.put("param", code);
+        querys.put("param", "**code**:" + code + ",**minute**:" + 5);
         querys.put("smsSignId", sign);
         querys.put("templateId",templateId);
         Map<String, String> bodys = new HashMap<String, String>();

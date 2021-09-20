@@ -19,7 +19,7 @@ public class SmsSendController {
     @Autowired
     Smscomponent smscomponent;
 
-    @GetMapping("")
+    @GetMapping("/sendcode")
     public R sendCode(@RequestParam("phone") String phone, @RequestParam("code") String code) {
         smscomponent.sendSmsCode(phone, code);
         return R.ok();

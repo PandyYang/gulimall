@@ -7,6 +7,7 @@ import com.pandy.common.utils.R;
 import com.pandy.common.vo.MemberRsepVo;
 
 import com.pandy.gulimall.auth.feign.MemberFeignService;
+import com.pandy.gulimall.auth.feign.ThirdPartFeignService;
 import com.pandy.gulimall.auth.vo.UserLoginVo;
 import com.pandy.gulimall.auth.vo.UserRegisterVo;
 import lombok.extern.slf4j.Slf4j;
@@ -39,8 +40,8 @@ import java.util.stream.Collectors;
 @Controller
 public class LoginController {
 
-//    @Autowired
-//    private ThirdPartFeignService thirdPartFeignService;
+    @Autowired
+    private ThirdPartFeignService thirdPartFeignService;
 
     @Autowired
     private MemberFeignService memberFeignService;
@@ -85,29 +86,29 @@ public class LoginController {
         }
     }
 
-//    @ResponseBody
-//    @GetMapping("/sms/snedcode")
-//    public R sendCode(@RequestParam("phone") String phone){
-//
-//        // TODO 接口防刷
-//        String redisCode = stringRedisTemplate.opsForValue().get(AuthServerConstant.SMS_CODE_CACHE_PREFIX + phone);
-//        if(null != redisCode && redisCode.length() > 0){
-//            long CuuTime = Long.parseLong(redisCode.split("_")[1]);
-//            if(System.currentTimeMillis() - CuuTime < 60 * 1000){
-//                return R.error(BizCodeEnum.SMS_CODE_EXCEPTION.getCode(), BizCodeEnum.SMS_CODE_EXCEPTION.getMsg());
-//            }
-//        }
-//        String code = UUID.randomUUID().toString().substring(0, 6);
-//        String redis_code = code + "_" + System.currentTimeMillis();
-//        // 缓存验证码
-//        stringRedisTemplate.opsForValue().set(AuthServerConstant.SMS_CODE_CACHE_PREFIX + phone, redis_code , 10, TimeUnit.MINUTES);
-//        try {
-//            return thirdPartFeignService.sendCode(phone, code);
-//        } catch (Exception e) {
-//            log.warn("远程调用不知名错误 [无需解决]");
-//        }
-//        return R.ok();
-//    }
+    @ResponseBody
+    @GetMapping("/sms/sendcode")
+    public R sendCode(@RequestParam("phone") String phone){
+
+        // TODO 接口防刷
+        String redisCode = stringRedisTemplate.opsForValue().get(AuthServerConstant.SMS_CODE_CACHE_PREFIX + phone);
+        if(null != redisCode && redisCode.length() > 0){
+            long CuuTime = Long.parseLong(redisCode.split("_")[1]);
+            if(System.currentTimeMillis() - CuuTime < 60 * 1000){
+                return R.error(BizCodeEnum.SMS_CODE_EXCEPTION.getCode(), BizCodeEnum.SMS_CODE_EXCEPTION.getMsg());
+            }
+        }
+        String code = UUID.randomUUID().toString().substring(0, 6);
+        String redis_code = code + "_" + System.currentTimeMillis();
+        // 缓存验证码
+        stringRedisTemplate.opsForValue().set(AuthServerConstant.SMS_CODE_CACHE_PREFIX + phone, redis_code , 10, TimeUnit.MINUTES);
+        try {
+            return thirdPartFeignService.sendCode(phone, code);
+        } catch (Exception e) {
+            log.warn("远程调用不知名错误 [无需解决]");
+        }
+        return R.ok();
+    }
 
     /**
      * TODO 重定向携带数据,利用session原理 将数据放在sessoin中 取一次之后删掉
