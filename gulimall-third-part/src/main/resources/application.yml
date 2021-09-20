@@ -9,6 +9,12 @@ spring:
       oss:
         endpoint: oss-cn-beijing.aliyuncs.com
         bucket: pandy-gulimall
+      sms:
+        host: https://gyytz.market.alicloudapi.com
+        path: /sms/smsSend
+        skgn: 2e65b1bb3d054466b82f0c9d125465e2
+        templateId: 908e94ccf08b4476ba6c876d13f084ad
+        appCode: e46ab33d8a7e40f2b1905a5ef7e5b686
 
   application:
     name: gulimall-third-part

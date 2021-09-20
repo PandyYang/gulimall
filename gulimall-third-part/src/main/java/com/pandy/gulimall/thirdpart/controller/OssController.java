@@ -1,4 +1,4 @@
-package com.pandy.gulimall.thirdpart;
+package com.pandy.gulimall.thirdpart.controller;
 
 import com.aliyun.oss.OSS;
 import com.aliyun.oss.OSSClient;

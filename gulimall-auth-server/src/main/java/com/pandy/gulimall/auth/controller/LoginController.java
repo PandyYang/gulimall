@@ -61,7 +61,7 @@ public class LoginController {
     public String regPage(HttpSession session){
         Object attribute = session.getAttribute(AuthServerConstant.LOGIN_USER);
         if(attribute == null){
-            return "login";
+            return "reg";
         }
         return "redirect:http://gulimall.com/reg.html";
     }
