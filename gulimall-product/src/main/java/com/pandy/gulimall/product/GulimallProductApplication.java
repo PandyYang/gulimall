@@ -9,8 +9,9 @@ import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.data.redis.repository.configuration.EnableRedisRepositories;
 import org.springframework.scheduling.annotation.EnableAsync;
+import org.springframework.session.data.redis.config.annotation.web.http.EnableRedisHttpSession;
 
-@EnableRedissonHttpSession
+@EnableRedisHttpSession
 @EnableCaching
 @MapperScan("com.pandy.gulimall.product.dao")
 @SpringBootApplication

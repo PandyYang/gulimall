@@ -41,7 +41,7 @@ public class IndexController {
 		// 获取一级分类所有缓存
 		List<CategoryEntity> categorys = categoryService.getLevel1Categorys();
 		model.addAttribute("categorys", categorys);
-		return "/index";
+		return "index";
 	}
 
 	@SneakyThrows
