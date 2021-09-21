@@ -63,11 +63,14 @@
             </div>
         </b>
         <ul>
-            <li>
+            <li  th:if="${session.loginUser ==null}">
                 <a href="/static/search/#" class="li_2">你好，请登录</a>
             </li>
-            <li>
+            <li th:if="${session.loginUser ==null}">
                 <a href="/static/search/#">免费注册</a>
+            </li>
+            <li th:if="${session.loginUser !=null}">
+                <a>欢迎，[[${session.loginUser.username}]]</a>
             </li>
             <span>|</span>
             <li>

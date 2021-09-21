@@ -3,3 +3,6 @@ spring:
     cache: false
     suffix: .html
     prefix: classpath:/templates/
+  redis:
+    host: 47.95.216.30
+    port: 6379
