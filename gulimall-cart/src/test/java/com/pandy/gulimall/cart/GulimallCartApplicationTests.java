@@ -17,9 +17,8 @@ public class GulimallCartApplicationTests {
         int i = Integer.parseInt(s);
 
         String[] ss = new String[]{"1", "2", "3"};
-        Integer[] objects1 = (Integer[])Arrays.stream(ss).map(res -> {
-            return Integer.parseInt(res);
-        }).toArray();
+        List<Integer> collect = Arrays.stream(ss).map(Integer::parseInt).collect(Collectors.toList());
+        Integer[] objects = (Integer[])collect.toArray(new Integer[collect.size()]);
 
     }
 }
