@@ -1,10 +1,5 @@
 package com.pandy.common.constant;
 
-/**
- * <p>Title: CartConstant</p>
- * Description：
- * date：2020/6/27 22:37
- */
 public class CartConstant {
 
 	public static final String TEMP_USER_COOKIE_NAME = "user-key";

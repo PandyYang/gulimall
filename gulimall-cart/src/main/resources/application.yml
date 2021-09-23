@@ -4,3 +4,9 @@ spring:
     password: Pan19970218
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://rm-2ze806i1i971v3wycoo.mysql.rds.aliyuncs.com:3306/gulimall_pms?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
+  thymeleaf:
+    cache: false
+  session:
+    store-type: redis
+  redis:
+    host: 47.95.216.30
