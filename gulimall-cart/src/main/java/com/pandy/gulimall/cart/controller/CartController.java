@@ -32,4 +32,9 @@ public class CartController {
         System.out.println(userInfoTo);
         return "cartList";
     }
+
+    @GetMapping("/addToCart")
+    public String addToCart() {
+        return "success";
+    }
 }
