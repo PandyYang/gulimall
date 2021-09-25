@@ -10,3 +10,8 @@ spring:
     store-type: redis
   redis:
     host: 47.95.216.30
+gulimall:
+  thread:
+    core-size: 20
+    max-size: 200
+    keep-alive-time: 10

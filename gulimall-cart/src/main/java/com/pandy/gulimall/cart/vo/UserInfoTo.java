@@ -13,6 +13,7 @@ public class UserInfoTo {
 
     private Long userId;
     private String userKey;
+    private String userName;
 
     private boolean tempUser = false;
 }
