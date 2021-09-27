@@ -10,6 +10,11 @@ spring:
         server-addr: 47.95.216.30:8848
   application:
     name: gulimall-order
+  redis:
+    host: 47.95.216.30
+  thymeleaf:
+    cache: false
+    suffix: .html
 
 mybatis-plus:
   mapper-locations: classpath*:/mapper/**/*.xml
