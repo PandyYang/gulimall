@@ -4,7 +4,7 @@ import com.alibaba.fastjson.TypeReference;
 import com.pandy.common.constant.AuthServerConstant;
 import com.pandy.common.exception.BizCodeEnum;
 import com.pandy.common.utils.R;
-import com.pandy.common.vo.MemberRsepVo;
+import com.pandy.common.vo.MemberResponseVo;
 
 import com.pandy.gulimall.auth.feign.MemberFeignService;
 import com.pandy.gulimall.auth.feign.ThirdPartFeignService;
@@ -73,7 +73,7 @@ public class LoginController {
         R r = memberFeignService.login(userLoginVo);
         if(r.getCode() == 0){
             // 登录成功
-            MemberRsepVo rsepVo = r.getData("data", new TypeReference<MemberRsepVo>() {});
+            MemberResponseVo rsepVo = r.getData("data", new TypeReference<MemberResponseVo>() {});
             session.setAttribute(AuthServerConstant.LOGIN_USER, rsepVo);
             log.info("\n欢迎 [" + rsepVo.getUsername() + "] 登录");
             return "redirect:http://gulimall.com";

@@ -2,7 +2,7 @@ package com.pandy.gulimall.cart.interceptor;
 
 import com.pandy.common.constant.AuthServerConstant;
 import com.pandy.common.constant.CartConstant;
-import com.pandy.common.vo.MemberRsepVo;
+import com.pandy.common.vo.MemberResponseVo;
 import com.pandy.gulimall.cart.vo.UserInfoTo;
 import org.springframework.util.StringUtils;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -28,7 +28,7 @@ public class CartInterceptor implements HandlerInterceptor {
 
         UserInfoTo userInfoTo = new UserInfoTo();
         HttpSession session = request.getSession();
-        MemberRsepVo user = (MemberRsepVo) session.getAttribute(AuthServerConstant.LOGIN_USER);
+        MemberResponseVo user = (MemberResponseVo) session.getAttribute(AuthServerConstant.LOGIN_USER);
         if (user != null){
             // 用户登陆了
             userInfoTo.setUserName(user.getUsername());

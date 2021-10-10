@@ -13,7 +13,7 @@ import java.util.Date;
  */
 @ToString
 @Data
-public class MemberRsepVo implements Serializable {
+public class MemberResponseVo implements Serializable {
 	private Long id;
 	/**
 	 * 会员等级id
