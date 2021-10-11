@@ -1,12 +1,11 @@
 package com.pandy.gulimall.order.vo;
 
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.web.bind.annotation.GetMapping;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @Author Pandy
@@ -16,7 +15,7 @@ import java.util.List;
 public class OrderConfirmVo {
 
     // 收货地址
-    List<MemberAddressVo> address;
+    List<MemberAddressVo> memberAddressVos;
 
     // 所有选中项
     List<OrderItemVo> items;
@@ -32,12 +31,12 @@ public class OrderConfirmVo {
     // 应付价格
     BigDecimal payPrice;
 
-    public List<MemberAddressVo> getAddress() {
-        return address;
+    public List<MemberAddressVo> getMemberAddressVos() {
+        return memberAddressVos;
     }
 
-    public void setAddress(List<MemberAddressVo> address) {
-        this.address = address;
+    public void setMemberAddressVos(List<MemberAddressVo> memberAddressVos) {
+        this.memberAddressVos = memberAddressVos;
     }
 
     public List<OrderItemVo> getItems() {
@@ -84,6 +83,9 @@ public class OrderConfirmVo {
         }
         return sum;
     }
+
+    @Getter @Setter
+    Map<Long,Boolean> stocks;
 
     public void setPayPrice(BigDecimal payPrice) {
         this.payPrice = payPrice;
