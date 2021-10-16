@@ -1,35 +1,22 @@
-package com.pandy.gulimall.product.config;
+package com.pandy.gulimall.order.config;
 
-import com.baomidou.mybatisplus.extension.plugins.PaginationInterceptor;
 import com.zaxxer.hikari.HikariDataSource;
 import io.seata.rm.datasource.DataSourceProxy;
-import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
+import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.util.StringUtils;
 
 import javax.sql.DataSource;
 
 /**
  * @Author Pandy
- * @Date 2021/8/21 20:20
+ * @Date 2021/10/16 12:09
  */
 @Configuration
-@EnableTransactionManagement
-@MapperScan("com.pandy.gulimall.product.dao")
-public class MybatisConfig {
-
-    // 引入分页插件
-    @Bean
-    public PaginationInterceptor paginationInterceptor() {
-        PaginationInterceptor paginationInterceptor = new PaginationInterceptor();
-        paginationInterceptor.setOverflow(true);
-        paginationInterceptor.setLimit(1000);
-        return paginationInterceptor;
-    }
+public class MySeataConfig {
 
     @Autowired
     DataSourceProperties dataSourceProperties;
