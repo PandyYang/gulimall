@@ -32,6 +32,16 @@ public class WareSkuController {
     @Autowired
     private WareSkuService wareSkuService;
 
+    /**
+     * 库存解锁的场景
+     * 超时自己解锁
+     * 手动解锁
+     * 下订单成功 库存锁定成功 但是其他业务调用失败 导致订单回滚
+     *      之前锁定的库存就要自动解锁
+     * @param vo
+     * @return
+     */
+
     @PostMapping("/lock")
     public R orderLockStock(WareSkuLockVo vo) {
         try {

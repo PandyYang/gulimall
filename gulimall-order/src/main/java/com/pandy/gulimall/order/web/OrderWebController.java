@@ -1,5 +1,7 @@
 package com.pandy.gulimall.order.web;
 
+import com.pandy.common.utils.R;
+import com.pandy.gulimall.order.entity.OrderEntity;
 import com.pandy.gulimall.order.service.OrderService;
 import com.pandy.gulimall.order.vo.OrderConfirmVo;
 import com.pandy.gulimall.order.vo.OrderSubmitVo;
@@ -26,6 +28,9 @@ public class OrderWebController {
     public String toPage(@PathVariable("page") String page) {
         return page;
     }
+
+
+
 
     @RequestMapping("/toTrade")
     public String toTrade(Model model) throws ExecutionException, InterruptedException {

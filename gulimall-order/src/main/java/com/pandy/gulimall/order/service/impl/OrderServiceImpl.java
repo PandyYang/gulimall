@@ -2,6 +2,8 @@ package com.pandy.gulimall.order.service.impl;
 
 import com.alibaba.fastjson.TypeReference;
 import com.baomidou.mybatisplus.core.toolkit.IdWorker;
+import com.pandy.common.constant.CartConstant;
+import com.pandy.common.to.mq.OrderTo;
 import com.pandy.common.utils.R;
 import com.pandy.common.vo.MemberResponseVo;
 import com.pandy.gulimall.order.constant.OrderConstant;
@@ -16,7 +18,10 @@ import com.pandy.gulimall.order.service.OrderItemService;
 import com.pandy.gulimall.order.to.OrderCreateTo;
 import com.pandy.gulimall.order.vo.*;
 import org.aspectj.weaver.ast.Or;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.BoundHashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.script.DefaultRedisScript;
 import org.springframework.stereotype.Service;
@@ -71,6 +76,9 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
 
     @Autowired
     ProductFeignService productFeignService;
+
+    @Autowired
+    RabbitTemplate rabbitTemplate;
 
     @Override
     public PageUtils queryPage(Map<String, Object> params) {
@@ -158,6 +166,11 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
                 if (r.getCode() == 0) {
                     // 锁成功
                     response.setOrder(order.getOrder());
+                    //发送消息到订单延迟队列，判断过期订单
+                    rabbitTemplate.convertAndSend("order-event-exchange","order.create.order",order.getOrder());
+                    //清除购物车记录
+                    BoundHashOperations<String, Object, Object> ops = redisTemplate.boundHashOps(CartConstant.CART_PREFIX + memberResponseVo.getId());
+
                     return response;
                 } else {
                     response.setCode(3);
@@ -168,6 +181,34 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
                 response.setCode(2);
                 return response;
             }
+        }
+    }
+
+    @Override
+    public OrderEntity getOrderByOrderSn(String orderSn) {
+        OrderEntity order_sn = this.getOne(new QueryWrapper<OrderEntity>().eq("order_sn", orderSn));
+        return order_sn;
+    }
+
+    /**
+     * 关闭过期的的订单
+     * @param orderEntity
+     */
+    @Override
+    public void closeOrder(OrderEntity orderEntity) {
+        //因为消息发送过来的订单已经是很久前的了，中间可能被改动，因此要查询最新的订单
+        OrderEntity newOrderEntity = this.getById(orderEntity.getId());
+        //如果订单还处于新创建的状态，说明超时未支付，进行关单
+        if (newOrderEntity.getStatus() == OrderStatusEnum.CREATE_NEW.getCode()) {
+            OrderEntity updateOrder = new OrderEntity();
+            updateOrder.setId(newOrderEntity.getId());
+            updateOrder.setStatus(OrderStatusEnum.CANCLED.getCode());
+            this.updateById(updateOrder);
+
+            //关单后发送消息通知其他服务进行关单相关的操作，如解锁库存
+            OrderTo orderTo = new OrderTo();
+            BeanUtils.copyProperties(newOrderEntity,orderTo);
+            rabbitTemplate.convertAndSend("order-event-exchange", "order.release.other",orderTo);
         }
     }
 

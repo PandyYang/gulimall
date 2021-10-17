@@ -2,6 +2,8 @@ package com.pandy.gulimall.ware.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.pandy.common.to.es.SkuHasStockVo;
+import com.pandy.common.to.mq.OrderTo;
+import com.pandy.common.to.mq.StockLockedTo;
 import com.pandy.common.utils.PageUtils;
 import com.pandy.gulimall.ware.entity.WareSkuEntity;
 import com.pandy.gulimall.ware.vo.LockStockResult;
@@ -24,5 +26,10 @@ public interface WareSkuService extends IService<WareSkuEntity> {
     List<SkuHasStockVo> getSkusStock(List<Long> skuIds);
 
     Boolean orderLockStock(WareSkuLockVo vo);
+
+
+    void unlock(StockLockedTo stockLockedTo);
+
+    void unlock(OrderTo stockLockedTo);
 }
 
