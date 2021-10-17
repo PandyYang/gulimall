@@ -15,7 +15,6 @@ import com.pandy.gulimall.order.interceptor.LoginUserInterceptor;
 import com.pandy.gulimall.order.service.OrderItemService;
 import com.pandy.gulimall.order.to.OrderCreateTo;
 import com.pandy.gulimall.order.vo.*;
-import io.seata.spring.annotation.GlobalTransactional;
 import org.aspectj.weaver.ast.Or;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -39,7 +38,6 @@ import com.pandy.common.utils.Query;
 import com.pandy.gulimall.order.dao.OrderDao;
 import com.pandy.gulimall.order.entity.OrderEntity;
 import com.pandy.gulimall.order.service.OrderService;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -121,8 +119,6 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
 
     }
 
-    @GlobalTransactional
-    @Transactional
     @Override
     public SubmitOrderResponseVo submitOrder(OrderSubmitVo submitVo) {
 
