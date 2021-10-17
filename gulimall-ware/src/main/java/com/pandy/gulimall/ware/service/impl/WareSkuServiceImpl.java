@@ -230,7 +230,10 @@ public class WareSkuServiceImpl extends ServiceImpl<WareSkuDao, WareSkuEntity> i
     public void unlock(OrderTo orderTo) {
         //为防止重复解锁，需要重新查询工作单
         String orderSn = orderTo.getOrderSn();
-        WareOrderTaskEntity taskEntity = wareOrderTaskService.getBaseMapper().selectOne((new QueryWrapper<WareOrderTaskEntity>().eq("order_sn", orderSn)));
+        WareOrderTaskEntity taskEntity = wareOrderTaskService
+                .getBaseMapper()
+                .selectOne((new QueryWrapper<WareOrderTaskEntity>()
+                        .eq("order_sn", orderSn)));
         //查询出当前订单相关的且处于锁定状态的工作单详情
         List<WareOrderTaskDetailEntity> lockDetails = wareOrderTaskDetailService.list(new QueryWrapper<WareOrderTaskDetailEntity>().eq("task_id", taskEntity.getId()).eq("lock_status", WareTaskStatusEnum.Locked.getCode()));
         for (WareOrderTaskDetailEntity lockDetail : lockDetails) {

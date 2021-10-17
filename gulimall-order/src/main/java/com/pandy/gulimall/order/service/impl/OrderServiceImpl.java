@@ -166,8 +166,9 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
                 if (r.getCode() == 0) {
                     // 锁成功
                     response.setOrder(order.getOrder());
-                    //发送消息到订单延迟队列，判断过期订单
-                    rabbitTemplate.convertAndSend("order-event-exchange","order.create.order",order.getOrder());
+                    //订单创建完成时发送 发送消息到订单延迟队列，判断过期订单
+                    rabbitTemplate.convertAndSend("order-event-exchange",
+                            "order.create.order",order.getOrder());
                     //清除购物车记录
                     BoundHashOperations<String, Object, Object> ops = redisTemplate.boundHashOps(CartConstant.CART_PREFIX + memberResponseVo.getId());
 
