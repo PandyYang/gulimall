@@ -2,9 +2,9 @@
 //
 //import com.alipay.api.AlipayApiException;
 //import com.alipay.api.internal.util.AlipaySignature;
-//import io.niceseason.gulimall.order.config.AlipayTemplate;
-//import io.niceseason.gulimall.order.service.OrderService;
-//import io.niceseason.gulimall.order.vo.PayAsyncVo;
+//import com.pandy.gulimall.order.config.AlipayTemplate;
+//import com.pandy.gulimall.order.service.OrderService;
+//import com.pandy.gulimall.order.vo.PayAsyncVo;
 //import org.springframework.beans.factory.annotation.Autowired;
 //import org.springframework.web.bind.annotation.GetMapping;
 //import org.springframework.web.bind.annotation.PostMapping;

@@ -18,6 +18,7 @@ public enum BizCodeEnum {
     LOGINACTT_PASSWORD_ERROR(15003, "账号或密码错误"),
     SOCIALUSER_LOGIN_ERROR(15004, "社交账号登录失败"),
     NOT_STOCK_EXCEPTION(21000, "商品库存不足"),
+    SECKILL_EXCEPTION(10005,"秒杀请求过多，请重新再试"),
     PRODUCT_UP_EXCEPTION(11000, "商品上架异常");
 
     private int code;

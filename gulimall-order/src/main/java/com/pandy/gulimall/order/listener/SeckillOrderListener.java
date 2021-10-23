@@ -2,8 +2,8 @@
 //
 //import com.pandy.gulimall.order.service.OrderService;
 //import com.rabbitmq.client.Channel;
-//import io.niceseason.common.to.mq.SeckillOrderTo;
-//import io.niceseason.gulimall.order.service.OrderService;
+//import com.pandy.common.to.mq.SeckillOrderTo;
+//import com.pandy.gulimall.order.service.OrderService;
 //import org.springframework.amqp.core.Message;
 //import org.springframework.amqp.rabbit.annotation.RabbitHandler;
 //import org.springframework.amqp.rabbit.annotation.RabbitListener;
