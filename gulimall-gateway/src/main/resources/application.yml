@@ -78,6 +78,12 @@ spring:
           uri: lb://gulimall-order
           predicates:
             - Host=order.gulimall.com
+
+        - id: gulimall_seckill_route
+          uri: lb://gulimall-seckill
+          predicates:
+            - Host=seckill.gulimall.com
+
 ## 前端项目 、/api
 
 server:
