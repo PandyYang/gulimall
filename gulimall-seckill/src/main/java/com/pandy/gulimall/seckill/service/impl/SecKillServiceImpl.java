@@ -60,10 +60,6 @@ public class SecKillServiceImpl implements SecKillService {
     //V: 秒杀的库存件数
     private final String SKU_STOCK_SEMAPHORE = "seckill:stock:";    //+商品随机码
 
-
-
-
-
     @Override
     public void uploadSeckillSkuLatest3Days() {
         R r = couponFeignService.getSeckillSessionsIn3Days();

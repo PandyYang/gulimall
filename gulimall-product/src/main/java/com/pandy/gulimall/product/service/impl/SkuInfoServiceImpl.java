@@ -1,9 +1,13 @@
 package com.pandy.gulimall.product.service.impl;
 
+import com.alibaba.fastjson.TypeReference;
+import com.pandy.common.utils.R;
 import com.pandy.gulimall.product.entity.SkuImagesEntity;
 import com.pandy.gulimall.product.entity.SpuInfoDescEntity;
+import com.pandy.gulimall.product.feign.SeckillFeignService;
 import com.pandy.gulimall.product.service.*;
 import com.pandy.gulimall.product.vo.ItemSaleAttrVo;
+import com.pandy.gulimall.product.vo.SeckillInfoVo;
 import com.pandy.gulimall.product.vo.SkuItemVo;
 import com.pandy.gulimall.product.vo.SpuItemAttrGroup;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,6 +46,9 @@ public class SkuInfoServiceImpl extends ServiceImpl<SkuInfoDao, SkuInfoEntity> i
 
     @Autowired
     private ThreadPoolExecutor executor;
+
+    @Autowired
+    private SeckillFeignService seckillFeignService;
 
     @Override
     public PageUtils queryPage(Map<String, Object> params) {
@@ -97,8 +104,17 @@ public class SkuInfoServiceImpl extends ServiceImpl<SkuInfoDao, SkuInfoEntity> i
             skuItemVo.setImages(imagesEntities);
         }, executor);
 
+        CompletableFuture<Void> seckillFuture = CompletableFuture.runAsync(() -> {
+            R seckillSkuInfo = seckillFeignService.getSeckillSkuInfo(skuId);
+            if (seckillSkuInfo.getCode() == 0) {
+                SeckillInfoVo data = seckillSkuInfo.getData(new TypeReference<SeckillInfoVo>() {
+                });
+                skuItemVo.setSeckillInfoVo(data);
+            }
+        }, executor);
 
-        CompletableFuture.allOf(saleAttrVosFuture, spuInfoDescFuture, attrGroupsFuture, imagesFeture).get();
+        CompletableFuture.allOf(saleAttrVosFuture, spuInfoDescFuture,
+                attrGroupsFuture, imagesFeture, seckillFuture).get();
 
         return skuItemVo;
     }
