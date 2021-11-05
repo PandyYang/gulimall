@@ -4,6 +4,7 @@ import com.alibaba.fastjson.TypeReference;
 import com.baomidou.mybatisplus.core.toolkit.IdWorker;
 import com.pandy.common.constant.CartConstant;
 import com.pandy.common.to.mq.OrderTo;
+import com.pandy.common.to.mq.SeckillOrderTo;
 import com.pandy.common.utils.R;
 import com.pandy.common.vo.MemberResponseVo;
 import com.pandy.gulimall.order.constant.OrderConstant;
@@ -211,6 +212,26 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
             BeanUtils.copyProperties(newOrderEntity,orderTo);
             rabbitTemplate.convertAndSend("order-event-exchange", "order.release.other",orderTo);
         }
+    }
+
+    @Override
+    public void createSeckillOrder(SeckillOrderTo orderTo) {
+        //TODO
+        OrderEntity entity = new OrderEntity();
+        entity.setOrderSn(orderTo.getOrderSn());
+        entity.setMemberId(orderTo.getMemberId());
+        entity.setStatus(OrderStatusEnum.CREATE_NEW.getCode());
+        BigDecimal multiply = orderTo.getSeckillPrice().multiply(new BigDecimal(orderTo.getNum()));
+        entity.setPayAmount(multiply);
+        this.save(entity);
+
+        // TODO 保存订单项信息
+        OrderItemEntity orderItemEntity = new OrderItemEntity();
+        orderItemEntity.setOrderSn(orderTo.getOrderSn());
+        orderItemEntity.setRealAmount(multiply);
+
+        orderItemEntity.setSkuQuantity(orderTo.getNum());
+        orderItemService.save(orderItemEntity);
     }
 
     private void saveOrder(OrderCreateTo order) {
