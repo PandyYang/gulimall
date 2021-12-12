@@ -19,6 +19,10 @@ public class GuliFeignConfig {
 
     @Bean("requestInterceptor")
     public RequestInterceptor requestInterceptor() {
+
+        ThreadLocal local = new ThreadLocal();
+        local.set(1);
+
         return new RequestInterceptor() {
             @Override
             public void apply(RequestTemplate requestTemplate) {

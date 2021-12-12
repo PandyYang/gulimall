@@ -115,6 +115,7 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
      * 空结果缓存 解决缓存穿透
      * 设置过期时间 解决缓存雪崩
      * 加锁 解决缓存击穿
+     *      并发环境下会
      *
      * @return
      */
@@ -124,15 +125,17 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
 
         String catalogJson = stringRedisTemplate.opsForValue().get("catalogJson");
         if (StringUtils.isEmpty(catalogJson)) {
+            System.out.println("缓存不命中，查询数据库..." + Thread.currentThread().getName());
             Map<String, List<Catelog2Vo>> catelogJsonFromDB = getCatelogJsonFromDBWithRedisLock();
-
             return catelogJsonFromDB;
         }
+        System.out.println("缓存命中");
         Map<String, List<Catelog2Vo>> stringListMap = JSON.parseObject(catalogJson, new TypeReference<Map<String, List<Catelog2Vo>>>() {
         });
         return stringListMap;
     }
 
+    // 本地锁无法解决分布式环境下的占锁问题
     public Map<String, List<Catelog2Vo>> getCatelogJsonFromDBWithLocalLock() {
         synchronized (this) {
             String catalogJson = stringRedisTemplate.opsForValue().get("catalogJson");
@@ -150,6 +153,7 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
      * 缓存数据库一致性问题
      * 1》双写模式
      * 2》失效模式
+     * 3》加锁模式
      * @return
      * @throws InterruptedException
      */
@@ -167,33 +171,54 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
             }
             return data;
     }
-//
-//    public Map<String, List<Catelog2Vo>> getCatelogJsonFromDBWithRedisLock() throws InterruptedException {
-//
-//        //1.抢占分布式锁  原子命令
-//
-//        String uuid = UUID.randomUUID().toString();
-//        Boolean lock = stringRedisTemplate.opsForValue().setIfAbsent("lock", "111", 300, TimeUnit.SECONDS);
-//        if (lock) {
-//            // 2.设置过期时间加锁成功 获取数据释放锁 [分布式下必须是Lua脚本删锁,不然会因为业务处理时间、网络延迟等等引起数据还没返回锁过期或者返回的过程中过期 然后把别人的锁删了]
-//            Map<String, List<Catelog2Vo>> data;
-//            try {
-//                data = getDataFromDB();
-//            } finally {
-////			stringRedisTemplate.delete("lock");
+
+    /**
+     * 问题1：
+     * 给锁设置自动过期 即便没有删除 会自动删除 防止机器宕机没有即时删除锁
+     * 加锁和设置过期时间之间必须是原子操作
+     *
+     * 问题2：
+     * 如果业务超时，锁的过期时间到达，导致锁删除但是业务没有完成.这个时候业务还在进行，但是
+     * 此时B线程进来又加上锁，所以要确保，每个业务都知道自己的加锁为了到时候进行锁的删除。
+     * 所以要使用uuid进行锁的唯一标识。
+     *
+     * 问题3：
+     * 获取对比的uuid值，以及对比成功删除是一个原子操作。
+     * 否则在对比的过程中，存在网络交互费时，让原本对比成功之后的立即删除变成了中间耗时导致redis已经更新为了别人的uuid。
+     * 导致了锁的误删，所以需要使用lua脚本
+     *
+     * 问题4：
+     * 执行业务时间过长，需要对锁进行续期。
+     *
+     * @return
+     * @throws InterruptedException
+     */
+    public Map<String, List<Catelog2Vo>> getCatelogJsonFromDBWithRedisLock2() throws InterruptedException {
+        //1.抢占分布式锁  原子命令
+        String uuid = UUID.randomUUID().toString();
+        //  设置redis标志进行抢占 设置过期时间和加锁都必须是原子操作 所以放在一个命令中进行
+        Boolean lock = stringRedisTemplate.opsForValue().setIfAbsent("lock", uuid, 300, TimeUnit.SECONDS);
+        if (Boolean.TRUE.equals(lock)) {
+            // 2.设置过期时间加锁成功 获取数据释放锁 [分布式下必须是Lua脚本删锁,不然会因为业务处理时间、网络延迟等等引起数据还没返回锁过期或者返回的过程中过期 然后把别人的锁删了]
+            Map<String, List<Catelog2Vo>> data;
+            try {
+                // 加锁成功... 执行业务
+                data = getDataFromDB();
+            } finally {
 //                String lockValue = stringRedisTemplate.opsForValue().get("lock");
-//                // 删除也必须是原子操作 Lua脚本操作 删除成功返回1 否则返回0
-//                String script = "if redis.call('get',KEYS[1]) == ARGV[1] then return redis.call('del',KEYS[1]) else return 0 end";
-//                // 原子删锁
-//                stringRedisTemplate.execute(new DefaultRedisScript<>(script, Long.class), Arrays.asList("lock"), uuid);
-//            }
-//            return data;
-//        } else {
-//            Thread.sleep(200);
-//            // 加锁失败
-//            return getCatelogJsonFromDBWithRedisLock();
-//        }
-//    }
+//			      stringRedisTemplate.delete("lock");
+                // 删除也必须是原子操作 Lua脚本操作 删除成功返回1 否则返回0
+                String script = "if redis.call('get',KEYS[1]) == ARGV[1] then return redis.call('del',KEYS[1]) else return 0 end";
+                // 原子删锁
+                stringRedisTemplate.execute(new DefaultRedisScript<>(script, Long.class), Collections.singletonList("lock"), uuid);
+            }
+            return data;
+        } else {
+            Thread.sleep(200);
+            // 加锁失败 自旋重试
+            return getCatelogJsonFromDBWithRedisLock();
+        }
+    }
 
     private Map<String, List<Catelog2Vo>> getDataFromDB() {
         List<CategoryEntity> entityList = baseMapper.selectList(null);
