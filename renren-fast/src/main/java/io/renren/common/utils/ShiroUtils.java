@@ -17,7 +17,7 @@ import org.apache.shiro.subject.Subject;
 /**
  * Shiro工具类
  *
- * @author Mark sunlightcs@gmail.com
+ *
  */
 public class ShiroUtils {
 
@@ -36,7 +36,7 @@ public class ShiroUtils {
 	public static Long getUserId() {
 		return getUserEntity().getUserId();
 	}
-	
+
 	public static void setSessionAttribute(Object key, Object value) {
 		getSession().setAttribute(key, value);
 	}

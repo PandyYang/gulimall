@@ -15,9 +15,9 @@ import org.apache.ibatis.annotations.Mapper;
 /**
  * 文件上传
  *
- * @author Mark sunlightcs@gmail.com
+ * @author Mark
  */
 @Mapper
 public interface SysOssDao extends BaseMapper<SysOssEntity> {
-	
+
 }

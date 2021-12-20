@@ -16,18 +16,18 @@ import org.quartz.*;
 /**
  * 定时任务工具类
  *
- * @author Mark sunlightcs@gmail.com
+ *
  */
 public class ScheduleUtils {
     private final static String JOB_NAME = "TASK_";
-    
+
     /**
      * 获取触发器key
      */
     public static TriggerKey getTriggerKey(Long jobId) {
         return TriggerKey.triggerKey(JOB_NAME + jobId);
     }
-    
+
     /**
      * 获取jobKey
      */
@@ -65,7 +65,7 @@ public class ScheduleUtils {
             jobDetail.getJobDataMap().put(ScheduleJobEntity.JOB_PARAM_KEY, scheduleJob);
 
             scheduler.scheduleJob(jobDetail, trigger);
-            
+
             //暂停任务
             if(scheduleJob.getStatus() == Constant.ScheduleStatus.PAUSE.getValue()){
             	pauseJob(scheduler, scheduleJob.getJobId());
@@ -74,7 +74,7 @@ public class ScheduleUtils {
             throw new RRException("创建定时任务失败", e);
         }
     }
-    
+
     /**
      * 更新定时任务
      */
@@ -87,20 +87,20 @@ public class ScheduleUtils {
             		.withMisfireHandlingInstructionDoNothing();
 
             CronTrigger trigger = getCronTrigger(scheduler, scheduleJob.getJobId());
-            
+
             //按新的cronExpression表达式重新构建trigger
             trigger = trigger.getTriggerBuilder().withIdentity(triggerKey).withSchedule(scheduleBuilder).build();
-            
+
             //参数
             trigger.getJobDataMap().put(ScheduleJobEntity.JOB_PARAM_KEY, scheduleJob);
-            
+
             scheduler.rescheduleJob(triggerKey, trigger);
-            
+
             //暂停任务
             if(scheduleJob.getStatus() == Constant.ScheduleStatus.PAUSE.getValue()){
             	pauseJob(scheduler, scheduleJob.getJobId());
             }
-            
+
         } catch (SchedulerException e) {
             throw new RRException("更新定时任务失败", e);
         }
@@ -114,7 +114,7 @@ public class ScheduleUtils {
         	//参数
         	JobDataMap dataMap = new JobDataMap();
         	dataMap.put(ScheduleJobEntity.JOB_PARAM_KEY, scheduleJob);
-        	
+
             scheduler.triggerJob(getJobKey(scheduleJob.getJobId()), dataMap);
         } catch (SchedulerException e) {
             throw new RRException("立即执行定时任务失败", e);

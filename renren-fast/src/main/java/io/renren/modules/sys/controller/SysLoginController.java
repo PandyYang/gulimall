@@ -32,7 +32,7 @@ import java.util.Map;
 /**
  * 登录相关
  *
- * @author Mark sunlightcs@gmail.com
+ *
  */
 @RestController
 public class SysLoginController extends AbstractController {
@@ -96,5 +96,5 @@ public class SysLoginController extends AbstractController {
 		sysUserTokenService.logout(getUserId());
 		return R.ok();
 	}
-	
+
 }

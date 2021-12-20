@@ -7,9 +7,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 /**
- * <p>Title: MemberRsepVo</p>
- * Description：
- * date：2020/6/26 17:17
+ * Title: MemberRsepVo<
  */
 @ToString
 @Data

@@ -35,7 +35,7 @@ import java.util.Map;
 /**
  * 文件上传
  *
- * @author Mark sunlightcs@gmail.com
+ *
  */
 @RestController
 @RequestMapping("sys/oss")
@@ -46,7 +46,7 @@ public class SysOssController {
     private SysConfigService sysConfigService;
 
     private final static String KEY = ConfigConstant.CLOUD_STORAGE_CONFIG_KEY;
-	
+
 	/**
 	 * 列表
 	 */
@@ -95,7 +95,7 @@ public class SysOssController {
 
 		return R.ok();
 	}
-	
+
 
 	/**
 	 * 上传文件

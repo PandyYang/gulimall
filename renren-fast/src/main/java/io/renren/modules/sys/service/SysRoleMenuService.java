@@ -18,12 +18,12 @@ import java.util.List;
 /**
  * 角色与菜单对应关系
  *
- * @author Mark sunlightcs@gmail.com
+ * @author Mark
  */
 public interface SysRoleMenuService extends IService<SysRoleMenuEntity> {
-	
+
 	void saveOrUpdate(Long roleId, List<Long> menuIdList);
-	
+
 	/**
 	 * 根据角色ID，获取菜单ID列表
 	 */
@@ -33,5 +33,5 @@ public interface SysRoleMenuService extends IService<SysRoleMenuEntity> {
 	 * 根据角色ID数组，批量删除
 	 */
 	int deleteBatch(Long[] roleIds);
-	
+
 }

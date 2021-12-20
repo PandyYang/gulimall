@@ -18,12 +18,12 @@ import java.util.List;
 /**
  * 用户与角色对应关系
  *
- * @author Mark sunlightcs@gmail.com
+ * @author Mark
  */
 public interface SysUserRoleService extends IService<SysUserRoleEntity> {
-	
+
 	void saveOrUpdate(Long userId, List<Long> roleIdList);
-	
+
 	/**
 	 * 根据用户ID，获取角色ID列表
 	 */

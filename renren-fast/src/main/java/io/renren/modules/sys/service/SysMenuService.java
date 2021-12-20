@@ -18,7 +18,7 @@ import java.util.List;
 /**
  * 菜单管理
  *
- * @author Mark sunlightcs@gmail.com
+ *
  */
 public interface SysMenuService extends IService<SysMenuEntity> {
 
@@ -34,12 +34,12 @@ public interface SysMenuService extends IService<SysMenuEntity> {
 	 * @param parentId 父菜单ID
 	 */
 	List<SysMenuEntity> queryListParentId(Long parentId);
-	
+
 	/**
 	 * 获取不包含按钮的菜单列表
 	 */
 	List<SysMenuEntity> queryNotButtonList();
-	
+
 	/**
 	 * 获取用户菜单列表
 	 */

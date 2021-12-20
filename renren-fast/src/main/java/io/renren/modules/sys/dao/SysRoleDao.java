@@ -17,11 +17,11 @@ import java.util.List;
 /**
  * 角色管理
  *
- * @author Mark sunlightcs@gmail.com
+ * @author Mark
  */
 @Mapper
 public interface SysRoleDao extends BaseMapper<SysRoleEntity> {
-	
+
 	/**
 	 * 查询用户创建的角色ID列表
 	 */

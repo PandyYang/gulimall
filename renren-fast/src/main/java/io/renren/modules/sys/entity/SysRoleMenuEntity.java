@@ -17,7 +17,7 @@ import java.io.Serializable;
 /**
  * 角色与菜单对应关系
  *
- * @author Mark sunlightcs@gmail.com
+ *
  */
 @Data
 @TableName("sys_role_menu")
@@ -36,5 +36,5 @@ public class SysRoleMenuEntity implements Serializable {
 	 * 菜单ID
 	 */
 	private Long menuId;
-	
+
 }

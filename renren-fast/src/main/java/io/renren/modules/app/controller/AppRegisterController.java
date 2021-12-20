@@ -28,7 +28,7 @@ import java.util.Date;
 /**
  * 注册
  *
- * @author Mark sunlightcs@gmail.com
+ *
  */
 @RestController
 @RequestMapping("/app")

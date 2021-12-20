@@ -16,7 +16,7 @@ import java.lang.annotation.Target;
 /**
  * 登录用户信息
  *
- * @author Mark sunlightcs@gmail.com
+ *
  */
 @Target(ElementType.PARAMETER)
 @Retention(RetentionPolicy.RUNTIME)

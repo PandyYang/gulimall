@@ -9,7 +9,7 @@ import java.util.Map;
 /**
  * 返回数据
  *		R 继承了 HashMap 则不能继续使用泛型数据了 必须全是hashMap数据
- * @author Mark sunlightcs@gmail.com
+ * @author Mark
  */
 public class R extends HashMap<String, Object> {
 
