@@ -8,6 +8,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 /**
  * @Author Pandy
  * @Date 2021/9/23 22:50
+ * 注册拦截器 拦截所有请求
  */
 @Configuration
 public class GulimallWebConfig implements WebMvcConfigurer {

@@ -15,9 +15,7 @@ import javax.servlet.http.HttpSession;
 import java.util.UUID;
 
 /**
- * <p>Title: CartInterceptor</p>
- * Description：在执行目标之前 判断用户是否登录,并封装
- * date：2020/6/27 22:27
+ * 在执行目标之前 判断用户是否登录,并封装
  */
 public class CartInterceptor implements HandlerInterceptor {
 
@@ -38,6 +36,7 @@ public class CartInterceptor implements HandlerInterceptor {
         if(cookies != null && cookies.length > 0){
             for (Cookie cookie : cookies) {
                 String name = cookie.getName();
+                // 存在user-key则需要设置临时用户标志
                 if(name.equals(CartConstant.TEMP_USER_COOKIE_NAME)){
                     userInfoTo.setUserKey(cookie.getValue());
                     userInfoTo.setTempUser(true);
