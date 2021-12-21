@@ -6,9 +6,6 @@ spring:
     nacos:
       discovery:
         server-addr: 47.95.216.30:8848
-    sentinel:
-      transport:
-        dashboard: 47.95.216.30:8858
   thymeleaf:
     cache: false
   session:
