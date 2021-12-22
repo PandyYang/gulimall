@@ -16,11 +16,6 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
-/**
- * <p>Title: CartController</p>
- * Description：
- * date：2020/6/27 22:20
- */
 @Slf4j
 @Controller
 public class CartController {

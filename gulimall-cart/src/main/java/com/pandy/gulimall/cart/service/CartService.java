@@ -1,18 +1,11 @@
 package com.pandy.gulimall.cart.service;
 
-
 import com.pandy.gulimall.cart.vo.Cart;
 import com.pandy.gulimall.cart.vo.CartItem;
-
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
-/**
- * <p>Title: CartService</p>
- * Description：
- * date：2020/6/27 22:17
- */
 public interface CartService {
 
     /**

@@ -38,7 +38,7 @@ public class MyRabbitConfig {
         rabbitTemplate.setReturnCallback(new RabbitTemplate.ReturnCallback() {
             @Override
             public void returnedMessage(Message message, int replyCode, String replyText, String exchange, String routingKey) {
-                System.out.println("消息未送达制定队列时回调");
+                System.out.println("消息未送达指定队列时回调");
             }
         });
     }
