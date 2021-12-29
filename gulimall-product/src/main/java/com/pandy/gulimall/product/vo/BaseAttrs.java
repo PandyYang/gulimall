@@ -2,11 +2,6 @@ package com.pandy.gulimall.product.vo;
 
 import lombok.Data;
 
-/**
- * <p>Title: BaseAttrs</p>
- * Description：
- * date：2020/6/5 14:58
- */
 @Data
 public class BaseAttrs {
 

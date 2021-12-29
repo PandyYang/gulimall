@@ -1,9 +1,7 @@
 package com.pandy.common.constant;
 
 /**
- * <p>Title: ProductConstant</p>
- * Description：给销售属性用来区分保存与修改  根据情况看是否需要保存关联属性
- * date：2020/6/2 23:45
+ * 给销售属性用来区分保存与修改  根据情况看是否需要保存关联属性
  */
 public class ProductConstant {
 

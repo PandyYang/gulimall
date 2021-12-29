@@ -3,9 +3,7 @@ package com.pandy.gulimall.ware.vo;
 import lombok.Data;
 
 /**
- * <p>Title: PurchaseItemDoneVo</p>
- * Description：采购项
- * date：2020/6/6 23:23
+ 采购项
  */
 @Data
 public class PurchaseItemDoneVo {

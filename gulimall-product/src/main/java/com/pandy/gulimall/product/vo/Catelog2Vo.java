@@ -7,11 +7,6 @@ import lombok.NoArgsConstructor;
 import java.io.Serializable;
 import java.util.List;
 
-/**
- * <p>Title: Catelog2Vo</p>
- * Description：
- * date：2020/6/9 14:41
- */
 @AllArgsConstructor
 @NoArgsConstructor
 @Data

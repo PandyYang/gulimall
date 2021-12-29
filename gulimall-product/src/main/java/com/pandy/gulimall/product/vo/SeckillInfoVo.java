@@ -4,11 +4,6 @@ import lombok.Data;
 
 import java.math.BigDecimal;
 
-/**
- * <p>Title: SeckillInfoVo</p>
- * Description：
- * date：2020/7/9 12:32
- */
 @Data
 public class SeckillInfoVo {
 

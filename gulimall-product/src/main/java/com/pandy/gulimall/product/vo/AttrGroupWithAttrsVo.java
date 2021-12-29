@@ -5,11 +5,6 @@ import lombok.Data;
 
 import java.util.List;
 
-/**
- * <p>Title: AttrGroupWithAttrsVo</p>
- * Description：
- * date：2020/6/5 11:46
- */
 @Data
 public class AttrGroupWithAttrsVo {
 

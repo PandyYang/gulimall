@@ -5,11 +5,6 @@ import lombok.Data;
 import java.math.BigDecimal;
 import java.util.List;
 
-/**
- * <p>Title: OrderItemVo</p>
- * Description：
- * date：2020/7/2 11:16
- */
 @Data
 public class OrderItemVo {
 

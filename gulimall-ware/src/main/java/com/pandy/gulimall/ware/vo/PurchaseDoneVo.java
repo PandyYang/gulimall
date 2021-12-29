@@ -6,9 +6,7 @@ import javax.validation.constraints.NotNull;
 import java.util.List;
 
 /**
- * <p>Title: PurchaseDoneVo</p>
- * Description：采购单
- * date：2020/6/6 23:23
+ 采购单
  */
 @Data
 public class PurchaseDoneVo {

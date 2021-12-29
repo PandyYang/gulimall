@@ -24,11 +24,6 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.stream.Collectors;
 
-/**
- * <p>Title: CartServiceImpl</p>
- * Description：
- * date：2020/6/27 22:17
- */
 @Slf4j
 @Service
 public class CartServiceImpl implements CartService {

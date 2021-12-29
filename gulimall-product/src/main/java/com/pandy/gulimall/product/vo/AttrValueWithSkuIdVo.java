@@ -2,11 +2,6 @@ package com.pandy.gulimall.product.vo;
 
 import lombok.Data;
 
-/**
- * <p>Title: AttrValueWithSkuIdVo</p>
- * Description：
- * date：2020/6/24 23:38
- */
 @Data
 public class AttrValueWithSkuIdVo {
 

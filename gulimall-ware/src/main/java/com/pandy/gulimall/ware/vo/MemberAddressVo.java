@@ -3,11 +3,6 @@ package com.pandy.gulimall.ware.vo;
 import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.Data;
 
-/**
- * <p>Title: MemberAddressVo</p>
- * Description：
- * date：2020/6/30 16:22
- */
 @Data
 public class MemberAddressVo {
 

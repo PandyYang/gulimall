@@ -40,11 +40,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-/**
- * <p>Title: MallServiceImpl</p>
- * Description：
- * date：2020/6/12 23:06
- */
 @Slf4j
 @Service
 public class MallSearchServiceImpl implements MallSearchService {
@@ -82,11 +77,12 @@ public class MallSearchServiceImpl implements MallSearchService {
         // 1. 模糊匹配 过滤(按照属性、分类、品牌、价格区间、库存) 先构建一个布尔Query
         // 1.1 must
         BoolQueryBuilder boolQuery = QueryBuilders.boolQuery();
+        // 标题作为关键字查询
         if(!StringUtils.isEmpty(Param.getKeyword())){
             boolQuery.must(QueryBuilders.matchQuery("skuTitle",Param.getKeyword()));
         }
         // 1.2 bool - filter Catalog3Id
-        if(StringUtils.isEmpty(Param.getCatalog3Id() != null)){
+        if(!StringUtils.isEmpty(Param.getCatalog3Id())){
             boolQuery.filter(QueryBuilders.termQuery("catalogId", Param.getCatalog3Id()));
         }
         // 1.2 bool - brandId [集合]
@@ -156,7 +152,7 @@ public class MallSearchServiceImpl implements MallSearchService {
             sourceBuilder.highlighter(builder);
         }
         // 聚合分析
-        // TODO 1.品牌聚合
+        // 1.品牌聚合
         TermsAggregationBuilder brand_agg = AggregationBuilders.terms("brand_agg");
         brand_agg.field("brandId").size(50);
         // 品牌聚合的子聚合
@@ -164,12 +160,12 @@ public class MallSearchServiceImpl implements MallSearchService {
         brand_agg.subAggregation(AggregationBuilders.terms("brand_img_agg").field("brandImg").size(1));
         // 将品牌聚合加入 sourceBuilder
         sourceBuilder.aggregation(brand_agg);
-        // TODO 2.分类聚合
+        // 2.分类聚合
         TermsAggregationBuilder catalog_agg = AggregationBuilders.terms("catalog_agg").field("catalogId").size(20);
         catalog_agg.subAggregation(AggregationBuilders.terms("catalog_name_agg").field("catalogName").size(1));
         // 将分类聚合加入 sourceBuilder
         sourceBuilder.aggregation(catalog_agg);
-        // TODO 3.属性聚合 attr_agg 构建嵌入式聚合
+        // 属性聚合 attr_agg 构建嵌入式聚合
         NestedAggregationBuilder attr_agg = AggregationBuilders.nested("attr_agg", "attrs");
         // 3.1 聚合出当前所有的attrId
         TermsAggregationBuilder attrIdAgg = AggregationBuilders.terms("attr_id_agg").field("attrs.attrId");
@@ -189,6 +185,8 @@ public class MallSearchServiceImpl implements MallSearchService {
      * 构建结果数据 指定catalogId 、brandId、attrs.attrId、嵌入式查询、倒序、0-6000、每页显示两个、高亮skuTitle、聚合分析
      */
     private SearchResult buildSearchResult(SearchResponse response, SearchParam Param) {
+
+        // 构建分页查询的商品结果集合
         SearchResult result = new SearchResult();
         // 1.返回的所有查询到的商品
         SearchHits hits = response.getHits();

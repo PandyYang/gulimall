@@ -19,11 +19,6 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
-/**
- * <p>Title: IndexController</p>
- * Description：
- * date：2020/6/9 14:01
- */
 @Controller
 public class IndexController {
 

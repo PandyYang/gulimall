@@ -4,11 +4,6 @@ import lombok.Data;
 
 import java.math.BigDecimal;
 
-/**
- * <p>Title: SkuInfoVo</p>
- * Description：用于封装远程返回的Sku对象
- * date：2020/6/28 11:33
- */
 @Data
 public class SkuInfoVo {
 

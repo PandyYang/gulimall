@@ -31,11 +31,6 @@ import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
-/**
- * <p>Title: LoginController</p>
- * Description：登录注册模块
- * date：2020/6/25 13:02
- */
 @Slf4j
 @Controller
 public class LoginController {

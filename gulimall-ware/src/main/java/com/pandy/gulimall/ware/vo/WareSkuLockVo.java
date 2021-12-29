@@ -4,11 +4,6 @@ import lombok.Data;
 
 import java.util.List;
 
-/**
- * <p>Title: WareSkuLockVo</p>
- * Description：
- * date：2020/7/2 11:13
- */
 @Data
 public class WareSkuLockVo {
 

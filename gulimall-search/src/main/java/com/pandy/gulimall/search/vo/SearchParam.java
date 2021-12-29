@@ -22,7 +22,6 @@ public class SearchParam {
     private String sort;
 
     // 综合排序
-
     private Integer hasStock;
 
     // 价格区间
