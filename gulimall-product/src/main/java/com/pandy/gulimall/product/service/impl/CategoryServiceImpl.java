@@ -19,6 +19,7 @@ import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.script.DefaultRedisScript;
 import org.springframework.stereotype.Service;
@@ -92,16 +93,20 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
      *
      * @param category
      */
+    // all entries删除分区下的所有数据 例如category分区
     @CacheEvict(value = {"category"}, key = "'getLevel1Categorys'", allEntries = true)
+//    @Caching(evict = {
+//            @CacheEvict(value = {"category"}, key = "'getLevel1Categorys'"),
+//            @CacheEvict(value = {"category"}, key = "'getCatalogJson'")
+//    })
     @Transactional
     @Override
     public void updateCascade(CategoryEntity category) {
         this.updateById(category);
         categoryBrandRelationService.updateCategory(category.getCatId(), category.getName());
-
         // 修改缓存数据
         // 删除缓存数据 等待下次主动查询进行更新
-}
+    }
 
     @Cacheable(value = {"category"}, key = "#root.method.name")
     @Override
@@ -121,6 +126,7 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
      */
 
     @Override
+    @Cacheable(value = {"category"}, key = "#root.methodName")
     public Map<String, List<Catelog2Vo>> getCatelogJson() throws InterruptedException {
 
         String catalogJson = stringRedisTemplate.opsForValue().get("catalogJson");
