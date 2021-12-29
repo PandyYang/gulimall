@@ -90,7 +90,7 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
 
     /**
      * 级联更新所有关联的数据
-     *
+     * 失效模式
      * @param category
      */
     // all entries删除分区下的所有数据 例如category分区
@@ -108,6 +108,10 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
         // 删除缓存数据 等待下次主动查询进行更新
     }
 
+    /**
+     * 双写模式
+     * @return
+     */
     @Cacheable(value = {"category"}, key = "#root.method.name")
     @Override
     public List<CategoryEntity> getLevel1Categorys() {
