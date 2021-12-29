@@ -130,7 +130,7 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
      */
 
     @Override
-    @Cacheable(value = {"category"}, key = "#root.methodName")
+    @Cacheable(value = {"category"}, key = "#root.methodName", sync = true)
     public Map<String, List<Catelog2Vo>> getCatelogJson() throws InterruptedException {
 
         String catalogJson = stringRedisTemplate.opsForValue().get("catalogJson");
