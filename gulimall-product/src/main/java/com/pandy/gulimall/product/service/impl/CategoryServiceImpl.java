@@ -254,7 +254,7 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
      */
     private List<CategoryEntity> getCategoryEntities(List<CategoryEntity> entityList, Long parent_cid) {
 
-        return entityList.stream().filter(item -> item.getParentCid() == parent_cid).collect(Collectors.toList());
+        return entityList.stream().filter(item -> item.getParentCid().equals(parent_cid)).collect(Collectors.toList());
     }
 
     private List<Long> findParentPath(Long catelogId, List<Long> listPath) {

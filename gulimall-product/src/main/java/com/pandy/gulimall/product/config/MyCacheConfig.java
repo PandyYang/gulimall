@@ -13,12 +13,12 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 /**
  * @Author Pandy
  * @Date 2021/9/5 2:10
+ * 缓存配置管理器 自动配置了redis cache manager初始化所有缓存， 每个缓存决定了使用什么配置
  */
 @EnableConfigurationProperties
 @Configuration
 @EnableCaching
 public class MyCacheConfig {
-
 
     @Bean
     RedisCacheConfiguration redisCacheConfiguration(CacheProperties cacheProperties) {
