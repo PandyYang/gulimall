@@ -1,5 +1,6 @@
 package com.pandy.gulimall.order;
 
+import com.pandy.gulimall.order.entity.OrderEntity;
 import com.pandy.gulimall.order.entity.OrderReturnReasonEntity;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
@@ -14,6 +15,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.Date;
+import java.util.UUID;
 
 @Slf4j
 @SpringBootTest
@@ -28,13 +30,25 @@ public class GulimallOrderApplicationTests {
 
     @Test
     public void sendMessage() {
-        OrderReturnReasonEntity orderReturnReasonEntity = new OrderReturnReasonEntity();
-        orderReturnReasonEntity.setId(1L);
-        orderReturnReasonEntity.setName("test");
-        orderReturnReasonEntity.setCreateTime(new Date());
-        orderReturnReasonEntity.setSort(1);
-        rabbitTemplate.convertAndSend("hello-java-exchange", "hello.java", orderReturnReasonEntity);
-        log.info("消息发生完成");
+
+        // 发送不同类型的消息到不同的rabbitHandler
+        for (int i = 0; i < 10; i++) {
+            if (i % 2 == 0) {
+                OrderReturnReasonEntity orderReturnReasonEntity = new OrderReturnReasonEntity();
+                orderReturnReasonEntity.setId(1L);
+                orderReturnReasonEntity.setName("test");
+                orderReturnReasonEntity.setCreateTime(new Date());
+                orderReturnReasonEntity.setSort(1);
+                // 指定不同的交换机和路由
+                rabbitTemplate.convertAndSend("hello-java-exchange", "hello.java", orderReturnReasonEntity);
+            } else {
+                OrderEntity orderEntity = new OrderEntity();
+                orderEntity.setOrderSn(UUID.randomUUID().toString());
+                rabbitTemplate.convertAndSend("hello-java-exchange", "hello.java", orderEntity);
+            }
+        }
+
+        log.info("消息发送完成");
     }
 
     @Test
