@@ -288,7 +288,6 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
 
         MemberResponseVo memberResponseVo = LoginUserInterceptor.loginUser.get();
 
-
         OrderEntity entity = new OrderEntity();
         entity.setOrderSn(orderSn);
         entity.setMemberId(memberResponseVo.getId());

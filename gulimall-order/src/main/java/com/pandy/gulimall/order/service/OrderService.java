@@ -22,6 +22,12 @@ public interface OrderService extends IService<OrderEntity> {
 
     PageUtils queryPage(Map<String, Object> params);
 
+    /**
+     * 订单确认页 返回需要的数据
+     * @return
+     * @throws ExecutionException
+     * @throws InterruptedException
+     */
     OrderConfirmVo confirmOrder() throws ExecutionException, InterruptedException;
 
     SubmitOrderResponseVo submitOrder(OrderSubmitVo submitVo);
