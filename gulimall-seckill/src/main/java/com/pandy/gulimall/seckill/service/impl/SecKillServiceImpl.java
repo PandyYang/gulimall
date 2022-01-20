@@ -119,6 +119,14 @@ public class SecKillServiceImpl implements SecKillService {
         return null;
     }
 
+    /**
+     *
+     * @param killId 秒杀id
+     * @param key 商品秒杀随机码
+     * @param num 秒杀数量
+     * @return
+     * @throws InterruptedException
+     */
     @Override
     public String kill(String killId, String key, Integer num) throws InterruptedException {
         BoundHashOperations<String, String, String> ops = redisTemplate.boundHashOps(SECKILL_CHARE_PREFIX);
@@ -142,7 +150,11 @@ public class SecKillServiceImpl implements SecKillService {
                         //4. 校验库存和购买量是否符合要求
                         if (num <= redisTo.getSeckillLimit()) {
                             //4.1 尝试获取库存信号量
+                            // 为什么使用redis的信号量作为库存？
+
+//                            redissonClient.getCountDownLatch()
                             RSemaphore semaphore = redissonClient.getSemaphore(SKU_STOCK_SEMAPHORE + redisTo.getRandomCode());
+                            // 秒杀商品
                             boolean acquire = semaphore.tryAcquire(num,100,TimeUnit.MILLISECONDS);
                             //4.2 获取库存成功
                             if (acquire) {
