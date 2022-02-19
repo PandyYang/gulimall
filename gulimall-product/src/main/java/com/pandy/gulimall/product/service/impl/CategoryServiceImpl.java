@@ -163,7 +163,21 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
      * 缓存数据库一致性问题
      * 1》双写模式
      * 2》失效模式
-     * 3》加锁模式
+     * 3》加锁模式  此处使用分布式锁进行更新
+     *
+     *
+     *
+     * 缓存数据一致性-解决方案
+     * • 无论是双写模式还是失效模式，都会导致缓存的不一致问题。即多个实例同时更新会出事。怎么办？
+     * • 1、如果是用户纬度数据（订单数据、用户数据），这种并发几率非常小，不用考虑这个问题，缓存数据加上过期时间，每隔一段时间触发读的主动更新即可
+     * • 2、如果是菜单，商品介绍等基础数据，也可以去使用canal订阅binlog的方式。
+     * • 3、缓存数据+过期时间也足够解决大部分业务对于缓存的要求。
+     * • 4、通过加锁保证并发读写，写写的时候按顺序排好队。读读无所谓。所以适合使用读写锁。（业务不关心脏数据，允许临时脏数据可忽略）；
+     *
+     * 总结：
+     * • 我们能放入缓存的数据本就不应该是实时性、一致性要求超高的。所以缓存数据的时候加上过期时间，保证每天拿到当前最新数据即可。
+     * • 我们不应该过度设计，增加系统的复杂性
+     * • 遇到实时性、一致性要求高的数据，就应该查数据库，即使慢点。
      * @return
      * @throws InterruptedException
      */
@@ -173,13 +187,13 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
         lock.lock();
 
         // 2.设置过期时间加锁成功 获取数据释放锁 [分布式下必须是Lua脚本删锁,不然会因为业务处理时间、网络延迟等等引起数据还没返回锁过期或者返回的过程中过期 然后把别人的锁删了]
-            Map<String, List<Catelog2Vo>> data;
-            try {
-                data = getDataFromDB();
-            } finally {
-                lock.unlock();
-            }
-            return data;
+        Map<String, List<Catelog2Vo>> data;
+        try {
+            data = getDataFromDB();
+        } finally {
+            lock.unlock();
+        }
+        return data;
     }
 
     /**

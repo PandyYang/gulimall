@@ -124,6 +124,7 @@ public class SecKillServiceImpl implements SecKillService {
      * @param killId 秒杀id
      * @param key 商品秒杀随机码
      * @param num 秒杀数量
+     *        使用信号量也可以作为分布式锁进行限流
      * @return
      * @throws InterruptedException
      */
