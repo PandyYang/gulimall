@@ -9,16 +9,25 @@ import org.springframework.context.annotation.Configuration;
 
 import java.util.HashMap;
 
+/**
+ *
+ * 创建对应的队列，并绑定至交换机。
+ * 交换机类别topic。
+ *
+ *
+ * order-event-exchange
+ *      - order.delay.queue
+ *      - order.release.order.queue
+ *      - order.seckill.order.queue
+ *      - order.release.stock.queue
+ */
 @Configuration
 public class MyRabbitmqConfig {
 
 
     /**
      * 处理
-     * 处理创建
-     * 超时取消
-     * 订单主动取消
-     * 订单支付成功
+     * 创建 超时取消 订单主动取消 订单支付成功
      * 的交换机
      * @return
      */
