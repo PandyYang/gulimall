@@ -1,6 +1,7 @@
 package com.pandy.gulimall.order.config;
 
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.rabbit.connection.CorrelationData;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -17,6 +18,7 @@ import javax.annotation.PostConstruct;
  * @Date 2021/9/27 10:15
  */
 @Configuration
+@Slf4j
 public class MyRabbitConfig {
 
     @Autowired
@@ -33,7 +35,10 @@ public class MyRabbitConfig {
     @PostConstruct // MyRabbitConfig创建完成之后执行这个方法
     public void initRabbitTemplate() {
 
-        // 消息成功
+        /**
+         * 消息成功
+         * confirm监听，当消息成功发送到交换机 ack = true, 没有发送到交换机 ack = false
+         */
         rabbitTemplate.setConfirmCallback(new RabbitTemplate.ConfirmCallback() {
             /**
              *
@@ -44,11 +49,16 @@ public class MyRabbitConfig {
             @Override
             public void confirm(CorrelationData correlationData, boolean ack, String cause) {
                 System.out.println("Confirm..correlationData[ " + correlationData +"]==>ack==> " +ack + " cause" + cause);
+                if (!ack) {
+                    System.out.println("消息发送至交换机失败，生产者生产消息失败！记录日志，发送邮件通知，落库定时任务扫描重发");
+                    log.error("消息发送失败: " + correlationData + "失败原因: " + cause);
+                }
             }
         });
 
         /**
          * 消息抵达队列的确认回调
+         * 当消息成功发送到交换机但是没有路由到队列触发此监听
          */
         rabbitTemplate.setReturnCallback(new RabbitTemplate.ReturnCallback() {
             /**
