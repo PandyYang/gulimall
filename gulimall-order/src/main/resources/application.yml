@@ -16,6 +16,11 @@ spring:
     cache: false
     suffix: .html
     prefix: classpath:/templates/
+  rabbitmq:
+    listener:
+      simple:
+        retry:
+          max-attempts: 3
 
 mybatis-plus:
   mapper-locations: classpath*:/mapper/**/*.xml
