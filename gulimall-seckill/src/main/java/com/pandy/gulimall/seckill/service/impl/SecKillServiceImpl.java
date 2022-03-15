@@ -170,7 +170,7 @@ public class SecKillServiceImpl implements SecKillService {
                                 orderTo.setPromotionSessionId(redisTo.getPromotionSessionId());
                                 orderTo.setSeckillPrice(redisTo.getSeckillPrice());
                                 orderTo.setSkuId(redisTo.getSkuId());
-                                //5.3 发送创建订单的消息
+                                //5.3 发送创建秒杀订单的消息
                                 rabbitTemplate.convertAndSend("order-event-exchange", "order.seckill.order", orderTo);
                             }
                         }
