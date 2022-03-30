@@ -28,7 +28,6 @@ public class SecKillScheduled {
      */
     @Async
     @Scheduled(cron = "5 * * * * ?")
-//    @Scheduled(cron = "* 33 17 * * ?")
     public void uploadSeckillSkuLatest3Days() {
         //为避免分布式情况下多服务同时上架的情况，使用分布式锁
         RLock lock = redissonClient.getLock(upload_lock);

@@ -8,8 +8,8 @@ import com.pandy.common.utils.R;
 import com.pandy.common.vo.MemberResponseVo;
 import com.pandy.gulimall.seckill.feign.CouponFeignService;
 import com.pandy.gulimall.seckill.feign.ProductFeignService;
-import com.pandy.gulimall.seckill.service.SecKillService;
 import com.pandy.gulimall.seckill.interceptor.LoginInterceptor;
+import com.pandy.gulimall.seckill.service.SecKillService;
 import com.pandy.gulimall.seckill.to.SeckillSkuRedisTo;
 import com.pandy.gulimall.seckill.vo.SeckillSessionWithSkusVo;
 import com.pandy.gulimall.seckill.vo.SkuInfoVo;
@@ -56,7 +56,7 @@ public class SecKillServiceImpl implements SecKillService {
     //V: hash，k为sessionId+"-"+skuId，v为对应的商品信息SeckillSkuRedisTo
     private final String SECKILL_CHARE_PREFIX = "seckill:skus";
 
-    //K: SKU_STOCK_SEMAPHORE+商品随机码
+    //K: SKU_STOCK_SEMAPHORE + 商品随机码
     //V: 秒杀的库存件数
     private final String SKU_STOCK_SEMAPHORE = "seckill:stock:";    //+商品随机码
 
@@ -74,8 +74,10 @@ public class SecKillServiceImpl implements SecKillService {
 
     @Override
     public List<SeckillSkuRedisTo> getCurrentSeckillSkus() {
+        // 获取到所有当前秒杀的缓存信息
         Set<String> keys = redisTemplate.keys(SESSION_CACHE_PREFIX + "*");
         long currentTime = System.currentTimeMillis();
+
         for (String key : keys) {
             String replace = key.replace(SESSION_CACHE_PREFIX, "");
             String[] split = replace.split("_");
@@ -84,7 +86,9 @@ public class SecKillServiceImpl implements SecKillService {
             //当前秒杀活动处于有效期内
             if (currentTime > startTime && currentTime < endTime) {
                 List<String> range = redisTemplate.opsForList().range(key, -100, 100);
+
                 BoundHashOperations<String, Object, Object> ops = redisTemplate.boundHashOps(SECKILL_CHARE_PREFIX);
+
                 List<SeckillSkuRedisTo> collect = range.stream().map(s -> {
                     String json = (String) ops.get(s);
                     SeckillSkuRedisTo redisTo = JSON.parseObject(json, SeckillSkuRedisTo.class);
@@ -124,7 +128,7 @@ public class SecKillServiceImpl implements SecKillService {
      * @param killId 秒杀id
      * @param key 商品秒杀随机码
      * @param num 秒杀数量
-     *        使用信号量也可以作为分布式锁进行限流
+     *         使用信号量也可以作为分布式锁进行限流
      * @return
      * @throws InterruptedException
      */
@@ -152,11 +156,10 @@ public class SecKillServiceImpl implements SecKillService {
                         if (num <= redisTo.getSeckillLimit()) {
                             //4.1 尝试获取库存信号量
                             // 为什么使用redis的信号量作为库存？
-
-//                            redissonClient.getCountDownLatch()
                             RSemaphore semaphore = redissonClient.getSemaphore(SKU_STOCK_SEMAPHORE + redisTo.getRandomCode());
                             // 秒杀商品
-                            boolean acquire = semaphore.tryAcquire(num,100,TimeUnit.MILLISECONDS);
+                            // 尝试获取信号量 如果没有可用 则等待
+                            boolean acquire = semaphore.tryAcquire(num, 100, TimeUnit.MILLISECONDS);
                             //4.2 获取库存成功
                             if (acquire) {
                                 //5. 发送消息创建订单
@@ -192,6 +195,7 @@ public class SecKillServiceImpl implements SecKillService {
                 List<String> values = session.getRelations().stream()
                         .map(sku -> sku.getPromotionSessionId() +"-"+ sku.getSkuId())
                         .collect(Collectors.toList());
+                // 秒杀的商品信息推入队列
                 redisTemplate.opsForList().leftPushAll(key,values);
             }
         });
@@ -222,8 +226,9 @@ public class SecKillServiceImpl implements SecKillService {
                     //5. 序列化为json并保存
                     String jsonString = JSON.toJSONString(redisTo);
                     ops.put(key,jsonString);
-                    //5. 使用库存作为Redisson信号量限制库存
+                    //6. 使用库存作为Redisson信号量限制库存
                     RSemaphore semaphore = redissonClient.getSemaphore(SKU_STOCK_SEMAPHORE + token);
+                    //7. 设置许可证数量 即秒杀商品的库存数量
                     semaphore.trySetPermits(sku.getSeckillCount());
                 }
             });
