@@ -21,7 +21,6 @@ public class SecKillScheduled {
 
     //秒杀商品上架功能的锁
     private final String upload_lock = "seckill:upload:lock";
-
     /**
      * 定时任务
      * 每天三点上架最近三天的秒杀商品
